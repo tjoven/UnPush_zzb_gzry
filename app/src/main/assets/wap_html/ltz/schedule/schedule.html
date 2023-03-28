@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+<title>工作日志</title>
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+<link rel="stylesheet" type="text/css" href="../../pub.css" />
+<link rel="stylesheet" type="text/css" href="../../css/list.css" />
+<link href="../../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet"> 
+
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<script type="text/javascript" src="../../js/list.js"></script>
+<script type="text/javascript" src="../../js/touchslider.dev.js"></script>
+
+<script type="text/javascript">
+
+	var dm = getQueryStringRegExp("dm"); // 列表类型，所有页面都使用一个列表页
+	var nm = getQueryStringRegExp("nm");
+	var _list = {};
+	$(function() {
+		//生成toolbar
+		$('#toolbar').toolbar();
+		if(nm == ''){			    	
+			nm=0;
+		}
+		
+		$(".c_tabs_text").eq(nm).addClass("c_tabs_active");
+		sys_renderList('table_list', "/ltz/schedule/default.do?method=list&page_size=10&page_goto=", {}, _list);						
+	});
+	
+	function callback_trclick_table_list(param) {	
+		sys_goURL("save.html?guid=" + param+"&from=schedule&diarytype=0");
+	}
+	
+	 function go_back(){	  
+   		 sys_goURL("../../main.html");  		
+   	}
+	 
+	function go_add(){
+		 sys_goURL("save.html?from=schedule&diarytype=0");  		
+	}
+	
+	function gourl(param){
+    	if(param=="dbsx"){
+    		sys_goURL("schedule.html?nm=0");  	
+    	}else if(param=="gzrz"){
+    		sys_goURL("worklog.html?nm=1");
+    	}		 	
+	}
+	
+	
+</script>
+</head>
+<body>
+	<div id="toolbar">
+		<span class="btn_bak"  onclick="go_back();"></span>
+		<h1 class="toolbar_title">工作日志</h1>
+		<span class="btn_toolbar_font" id="btn_add" style="color:#ffffff;"  onclick="go_add();">新增</span>
+	</div>
+	
+	<div class="c_tabs div_other_40" id="div_tabs" >
+	     <div  id='div_list0' >
+		    <div class='c_tabs_text' onclick="gourl('dbsx')">待办事项</div>
+	 	 </div>   
+	 	 <div  id='div_list1' >
+		    <div class='c_tabs_text' onclick="gourl('gzrz')">工作日志</div>
+	 	 </div>	 	
+	</div>
+	
+	<div class="ui-refresh" id="div_table_list">
+		<ul class="data-list" id="table_list" style="list-style-type:none">
+			<li style="display: none;" >
+				<div style="display: none;">{guid}</div>			
+				<div class="list_row_con" style="height:65px;min-height:65px;background-color: #ffffff;" >
+					<div class="list_row_col1" style="width:15px;"></div>
+					<div class="list_row_col2" style="width:100%;">
+						<div class="list_row_col2_1 overflow" style="margin-top: 10px;">
+							<div style="width:40%;display:inline-block;">{content}</div>
+							<!-- <div style="width:30%;display:inline-block;text-align: right;">创建时间:&nbsp;&nbsp;{found_time}</div> -->
+						</div>
+						<div class="list_row_col2_2 overflow" style="top:5px;">
+							<div style="width:30%;display:inline-block;text-align:left;">开始时间:&nbsp;&nbsp;{start_time1}</div>							
+						</div>
+					</div>
+					<div class="list_row_col3" style="width:30px;">
+					</div>
+				</div>
+			</li>
+		</ul>
+		<div class="ui-refresh-down"></div>
+	</div>
+	
+		
+</body>
+</html>

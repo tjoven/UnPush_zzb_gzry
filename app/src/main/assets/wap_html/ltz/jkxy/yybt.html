@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		  content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0,maximum-scale=1.0">
+
+	<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/list.css" />
+	<link rel="stylesheet" type="text/css" href="../../pub.css" />
+	<link rel="stylesheet" type="text/css" href="../../main.css" />
+	<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+	<script type="text/javascript" src="../../js/ict.js"></script>
+	<script type="text/javascript" src="../../js/local.js"></script>
+	<script type="text/javascript" src="../../js/list.js"></script>
+	<script type="text/javascript" src="../../js/touchslider.dev.js"></script>
+	<link href="../../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+	<script type="text/javascript">
+        var dm = getQueryStringRegExp("dm"); // 列表类型，所有页面都使用一个列表页
+        var nm = getQueryStringRegExp("nm");
+        var _list = {};
+        $(function() {
+            $('#toolbar').toolbar();
+            if(nm == ''){
+                nm=0;
+            }
+            $(".c_tabs_text").eq(nm).addClass("c_tabs_active");
+            sys_renderList('table_list', "/ltz/jkxy/yybt/default.do?method=list&type=1&page_size=10&page_goto=", {}, _list);
+        });
+
+        //调到各个功能模块
+        function gourl(id) {
+            var url = null;
+            if(id=="btff"){//补贴发放
+                sys_goURL("yybt.html?nm=0");
+            }else if(id=="btwff"){//补贴未发放
+                sys_goURL("yybt_no.html?nm=1");
+            }
+
+            sys_goURL(url);
+        }
+
+        function back(){
+            sys_goURL("main.html?nm=1");
+        }
+
+	</script>
+	<title>综合服务</title>
+</head>
+<body style="background-color:#ffffff;">
+<div id="toolbar" >
+	<span id="btn_bak" class="btn_bak" onclick="back();" ></span>
+	<h1 class="toolbar_title" >营养补贴发放</h1>
+</div>
+<div class="c_tabs div_other_40" id="div_tabs" >
+	<div  id='div_list0' >
+		<div class='c_tabs_text' onclick="gourl('btff')">营养补贴发放</div>
+	</div>
+	<div  id='div_list1' >
+		<div class='c_tabs_text' onclick="gourl('btwff')">营养补贴未发放</div>
+	</div>
+</div>
+<div class="ui-refresh" id="div_table_list">
+	<ul class="data-list" id="table_list" style="list-style-type:none">
+		<li style="display: none;" >
+			<div style="display: none;">{guid}</div>
+			<!-- 点击行的参数 -->
+			<div class="list_row_con" style="height:65px;min-height:65px;background-color: #ffffff;" >
+				<div class="list_row_col1" style="width:20px;"></div>
+				<div class="list_row_col2 overflow" style="width:100%;line-height: 65px;">
+					<div style="width:30%;display:inline-block;">{xm}</div>
+					<div style="width:30%;display:inline-block;text-align:center;">{tlx}</div>
+					<div style="width:30%;display:inline-block;text-align: right;">{money}元</div>
+				</div>
+			</div>
+		</li>
+	</ul>
+	<div class="ui-refresh-down"></div>
+</div>
+</body>
+</html>

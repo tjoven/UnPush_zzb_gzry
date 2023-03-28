@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+  <head>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+    <title>详情</title>
+    <link rel="stylesheet" type="text/css" href="../../../gmu/css/gmu.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/base.css" />
+    <link type="text/css" rel="stylesheet" href="../../../css/iconfont/iconfont.css" />
+    <script type="text/javascript" src="../../../gmu/js/gmu.js"></script> 
+	<script type="text/javascript" src="../../../js/ict.js"></script>
+    <script type="text/javascript" src="../../../js/local.js"></script>
+    <script type="text/javascript">
+        sys_addMeun = false;
+		var ywid = getQueryStringRegExp("ywid");
+		var _list = {};
+		$(function(){
+			//生成toolbar
+		  	$('#toolbar2').toolbar();
+	        sys_ajaxGet("/tzsf/signup/count.do?method=getSignUpCounts",{ywid:ywid});
+	        sys_ajaxGet("/tzsf/signup/count.do?method=wap_signupList",{ywid:ywid},function(json){
+	             bind_html(json.list_sign_up);
+	            var _height = getListHeight();
+	            $("#innerscroller").height(window.innerHeight-_height-$(".sign_up_info").height());
+				innerscroll = new iScroll("innerscroller",{click:true});
+				if(json.show_ride_flag){
+				  $("#ride_place_class").show();
+				  $("#ride_num").show();
+				  $(".c_ride").show();
+				}else{
+				  $("#ride_place_class").hide();
+				  $("#ride_num").hide();
+				  $(".c_ride").hide();
+				}
+	        });
+	     
+		});
+		function  bind_html(list){
+		  if (list.length > 0) {
+			var sspHtml = "";
+			if(list.length>0){
+	              sspHtml+=" <thead ><tr>";
+	              sspHtml+="<td width='30px'></td>";
+	              sspHtml+="<td width='50px'>姓名</td>";
+	              sspHtml+="<td class='c_ride' width='60px'>是否乘车</td>";
+	              sspHtml+="<td class='c_ride' width='100px'>乘车地点</td>";
+	              sspHtml+="<td width='200px'>留言</td>";
+	              sspHtml+="<td width='80px'>报名时间</td>";
+	              sspHtml+="</tr></thead>"
+	       } 
+			for (var i = 0; i < list.length; i++) {				
+		        if(i%2==0){
+		            sspHtml+="<tr class='c_trOdd'>";
+		        }else{
+		          sspHtml+="<tr class='c_trEven'>";
+		        }
+		       
+		        sspHtml+="<td >"+(i+1)+"</td>";
+		        sspHtml+="<td >"+list[i].yhxm+"</td>";
+		        sspHtml+="<td class='c_ride'>"+((typeof(list[i].is_ride_name)== "undefined")?"":list[i].is_ride_name)+"</td>";
+		        sspHtml+="<td class='c_ride'>"+((typeof(list[i].ride_place)== "undefined")?"":list[i].ride_place)+"</td>";
+		        sspHtml+="<td >"+((typeof(list[i].msgnr)== "undefined")?"":list[i].msgnr)+"</td>";
+		        sspHtml+="<td >"+((typeof(list[i].signup_time)== "undefined")?"":list[i].signup_time)+"</td>";
+		        
+		        sspHtml+="</tr>";
+		        
+			}
+			
+			$('#list_sign_up').html("");
+			$('#list_sign_up').html(sspHtml);
+		}
+		}
+		
+		function go_back(){
+			sys_closeDetail();
+   		}
+   		function classifyPlace(){
+   		    if($("#ride_count").text()==0){
+   		      sys_alert("暂无乘车人员");return;
+   		     }
+   		   // sys_goURL("placeShow.html?yywid="+ywid);  
+   		   window.location.href="placeShow.html?yywid="+ywid;
+   		}
+	
+    </script>
+
+    <style type="text/css">
+		.ui-toolbar-wrap{
+    		//background-color: #FFB73E;
+    		border: none !important;
+    	}
+    	.sign_up_info{
+
+    	  padding-left: 10px;
+    	  padding-top:10px;
+    	}
+    	.div_sub{
+    	  height: 30px;
+    	  line-height: 30px;
+    	  //font-size: 16px;
+    	  vertical-align: middle;
+    	}
+     .scroller_c {
+				position: absolute;
+				z-index: 1;
+				-webkit-transform: translateZ(0);
+				-moz-transform: translateZ(0);
+				-ms-transform: translateZ(0);
+				-o-transform: translateZ(0);
+				transform: translateZ(0);
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+				-webkit-text-size-adjust: none;
+				-moz-text-size-adjust: none;
+				-ms-text-size-adjust: none;
+				-o-text-size-adjust: none;
+				text-size-adjust: none;
+			}
+			 #innerscroller {
+			position: absolute;
+			z-index: 1;
+			/*
+			top: 266px;
+			bottom: 48px;
+			left: 0;
+			*/
+			width: 100%;
+			overflow: hidden; 
+		}
+    table.c_table_list{ 
+                     
+    	    border:1px solid #dddddd;
+			//border-right:1px solid #dddddd;
+			color:#3b3b3b;
+			table-layout:fixed;
+			width:100%;
+			border-collapse: collapse;
+			border-spacing: 0;
+			border-radius: 1px;
+    	 }
+    	 table.c_table_list thead tr{
+			height: 35px;
+			transition: all .3s;
+			-webkit-transition: all .3s;
+			background-color: #f2f2f2
+         }
+		table.c_table_list tbody tr{
+			height: 35px;
+		}
+		table.c_table_list thead td {
+			border-left: 1px solid #dddddd;
+			border-bottom:1px solid #dddddd;
+			font-weight:bold;
+			/* background-color:#f2f4f6; */
+			margin:0;
+			padding:0 0 0 12px;
+			*padding-top:2px;
+			text-align: left;
+		   vertical-align: middle;	
+		   font-size: 14px;
+		}
+		table.c_table_list tbody td {
+			border-left: 1px solid #dddddd;
+			border-bottom:1px solid #dddddd;
+			margin:0;
+			padding:0 0 0 12px;
+			*padding-top:2px;
+		   text-align: left;
+		   vertical-align: middle;	
+		    font-size: 14px;
+		}
+		//奇数行
+		.c_trOdd {
+	         background-color: #FFFFFF;
+		}
+		.c_trEven {
+			background-color: #F3F3F3;
+		}
+    	    
+    </style>
+  </head>
+  <body>
+    <div id="toolbar2">
+	    <span class="btn_bak"  onclick="sys_closeDetail();"></span>
+	    <h1 class="toolbar_title">活动报名名单</h1>
+	</div>
+     <div class="sign_up_info">
+				    <div class="div_sub">已报名参加人数：<span id="canjia_count"></span></div>
+				    <div class="div_sub" id="ride_num">乘车人数：<span id="ride_count"></span></div>
+				    <div class="div_sub" id="ride_place_class" onclick="classifyPlace();" style="text-decoration:underline;color:#646464">按照乘车地点分类&gt;&gt;</div>
+	 </div>
+	
+     
+	            
+	<div id="innerscroller"> 
+		 <div class="scroller_c">
+		   <table class="c_table_list" id="list_sign_up">
+		   <!-- 
+		    <thead >
+		      <tr>
+		        <td width="36px;">序号</td>
+		        <td width="50px;">姓名</td>
+		        <td width="60px;">是否乘车</td>
+		        <td width="100px;">乘车地点</td>
+		        
+		        <td width="200px;">留言</td>
+		        <td width="80px">报名时间</td>
+		      </tr>
+		    </thead>
+		     <tbody>
+		      <tr>
+		        <td >1</td><td>姓名名</td><td >是</td><td >乘车地点乘车地点乘车地点</td><td >留言留言留言留言留言留言留言留言留言留言</td><td>04-01 00:00</td>
+		      </tr>
+		     </tbody>
+		      -->
+		   </table>
+		 </div>
+      </div> 
+	    					
+
+  </body>
+</html>

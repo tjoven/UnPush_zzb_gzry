@@ -1,0 +1,233 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+<title>走访慰问</title>
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<script type="text/javascript">
+var guid = null;
+var zflx = null;
+var innerscroll = null;
+	$(function() {
+		$('#toolbar').toolbar();
+		 guid = getQueryStringRegExp("guid");
+		 zflx = getQueryStringRegExp("zflx");
+		 
+		sys_ajaxGet("/ltz/zfww/default.do?method=wapShow&guid=" + guid, function(json) {
+			bind(json);
+			//var lj = json.formData.photo_url;
+			//$("#photo_div").append("<img src='"+sys_ctx+lj+"' onerror=\"javascript:this.src='avatar.png';\"  style='width:100%;height:100%'> ");
+		});
+		
+		$("#btn_bak").click(function() {
+			sys_goURL("zfww.html?zflx="+zflx);
+		});
+		
+		$("#btn_upate").click(function(){
+			sys_goURL("save.html?guid="+guid+"&from=show&zflx="+zflx);
+		});
+		
+		$("#btn_delete").click(function() {
+			sys_confirm("确认删除吗？",function(flag){
+				if(flag){
+					deleteReport();
+				}else{
+					return ;
+				}
+			});
+		});
+		
+		var _height = getListHeight();
+		$("#sys_innerscoll").height(window.innerHeight - _height);
+		innerscroll = new iScroll("sys_innerscoll", {
+			click : true
+		});
+		
+		if("rczf"==zflx){
+			$(".toolbar_title").text("日常走访");
+			$(".zflx_title").text("走访");
+			$(".zflx_title_2").text("走访详情");
+		}else if("jrww"==zflx){
+			$(".toolbar_title").text("节日慰问");
+			$(".zflx_title").text("慰问");
+			$(".zflx_title_2").text("慰问详情");
+			$("#wwjTr").show();
+		}else if("srkw"==zflx){
+			$(".toolbar_title").text("生日看望");
+			$(".zflx_title").text("看望");
+			$(".zflx_title_2").text("看望详情");
+		}
+	});
+	
+	function deleteReport(){
+		   sys_ajaxPost("/hmdj/report/default.do?method=wapdelete&guid="+jhid,"",function(data){
+				 if(data.result == true) {		
+					 sys_alert("删除成功");
+						setTimeout(function() {
+							sys_goURL("finishShow.html?rwlxdm="+rwlxdm +"&jhid="+jhid );
+						}, 1000);
+					 }else{
+					   sys_alert(data.msg); 
+				     }
+		       });
+	}
+ 
+</script>
+<style type="text/css">
+
+.ui-toolbar-wrap{
+	border:0px;
+}
+.form_cell_label{
+	color:#000000;
+}
+
+ .form-control {
+ 	color: #bcb4b4;
+}
+
+ .c_form_show>div {
+    position: relative;
+}
+#leave_msg_title {
+    width: 100px;
+    margin-right: 10px;
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 2px solid red;
+    padding-top: 5px;
+    position: absolute;
+    bottom: 0;
+}
+.leave_msg_title_star {
+    float: left;
+    width: 22px;
+    height: 25px;
+    background-image: url(logo.png);
+    background-repeat: round;
+    background-size: 100% 100%;
+}
+.leave_msg_title_lable {
+    float: left;
+    height: 25px;
+    margin-left: 5px;
+    color: red;
+    vertical-align: bottom;
+}
+</style>
+</head>
+<body style="background-color: white!important;">
+	<div id="toolbar">
+		<span id="btn_bak" class="btn_bak"></span>
+		<h1 class="toolbar_title"></h1>
+		<span class="btn_toolbar_font" style="color: #ffffff;font-size: 20px;" id="btn_upate">修改</span>
+		<!--<span class="btn_toolbar_font" style="color: #ffffff;font-size: 14px;display:none;" id="btn_delete">删除</span> -->
+	</div>
+	
+	<div id="sys_innerscoll">
+		<div style="padding:10px;">
+			<form id="form_show">
+				<div class="c_form_show">
+					<div>
+						<div class="form_cell_label">姓名&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="xm" id="xm" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">性别&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="sex" id="sex" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">职级&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="post_mc" id="post_mc" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">年龄&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="age" id="age" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_item" style="padding:10px;">
+							<span class="form-control" id="post"></span>
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">退(离)休&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="retired_type" id="retired_type" />
+						</div>
+					</div>
+					<!-- 走访详情 -->
+					<div>
+						<div id="leave_msg_title">
+							<div class="leave_msg_title_star"></div>
+							<div class="leave_msg_title_lable"><span class="zflx_title_2"></span></div>
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label"><span class="zflx_title"></span>时间&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="zfsj" id="zfsj" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label"><span class="zflx_title"></span>地点&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="zfdd" id="zfdd" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label"><span class="zflx_title"></span>领导&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="zfld" id="zfld" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">陪同人员&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="ptry" id="ptry" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">其他人员&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="qtry" id="qtry" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">慰问品&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="wwp" id="wwp" />
+						</div>
+					</div>
+					<div id="wwjTr" style="display:none;">
+						<div class="form_cell_label">慰问金&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="wwj_show" id="wwj_show" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">反映问题&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="fywt" id="fywt" />
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

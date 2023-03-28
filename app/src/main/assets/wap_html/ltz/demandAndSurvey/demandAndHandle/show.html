@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+<title>日常管理</title>
+<link rel="stylesheet" type="text/css" href="../../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/base.css" />
+<script type="text/javascript" src="../../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../../js/ict.js"></script>
+<script type="text/javascript" src="../../../js/local.js"></script>
+<link href="../../../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript">
+	var guid = null;
+	var innerscroll = null;
+	$(function() {
+		$('#toolbar').toolbar();
+		guid = getQueryStringRegExp("guid");
+
+		//sys_ajaxGet("/ltz/dailyManagement/getEntryAndExitInfo/default.do?method=getHandleState",function(data){
+			//bind(data);
+			sys_ajaxGet("/ltz/dailyManagement/getEntryAndExitInfo/default.do?method=wapShow2&guid=" + guid, function(json) {
+				bind(json);
+				var cgjcolor=json.formData.cgjcolor;
+				$("#cgjzj").css("color",cgjcolor);
+				if(json.formData.reason == '其他'){
+					$('#reasonqt_').css('display','');
+				}else{
+					$('#reasonqt_').css('display','none');
+				}
+				if(json.formData.handle_state == '05'){
+					$('#handleqt_').css({'display':''});
+					
+				}else{
+					$('#handleqt_').css({'display':'none'});
+				}
+				var _height = getListHeight();
+				$("#sys_innerscoll").height(window.innerHeight - _height);
+				innerscroll = new iScroll("sys_innerscoll", {
+					click : true
+				});
+			});
+		//});
+		
+	
+		$("#btn_bak").click(function() {
+			sys_goURL("cgjgl.html");
+		});
+		
+		
+		$("#btn_save").click(function(){
+			
+			var queryString = $("#form_show").serialize();
+			sys_ajaxPost("/ltz/dailyManagement/getEntryAndExitInfo/default.do?method=wapSave2" , queryString, function(data) {
+				if (data.result == true) {
+					sys_alert("提交成功");
+					setTimeout(function() {
+						sys_goURL("cgjgl.html");
+					}, 1000);
+				} else {
+					sys_alert_xgmm(data.msg);
+				}
+			});
+		});			
+	});
+	
+		function handle_state(){
+			if($("#handle_state").val() == '05'){
+				$('#handleqt_').css({'display':''});
+				
+			}else{
+				$('#handleqt_').css({'display':'none'});
+			}
+		}
+ 
+</script>
+<style type="text/css">
+
+.ui-toolbar-wrap{
+	border:0px;
+}
+.d_form_table td{
+ 	height:34px;
+ 	font-size:14px;
+ 	font-weight:normal;
+ }
+ .save{
+	width: 50px;
+    height: 50px;
+   /*  background: url(../../../img/save1.png) no-repeat;
+    background-position: center center; */
+    background-size: 28px 28px;
+    border: 0px !important;
+}
+.field{
+ 	border-bottom:5px solid #edf0f5;
+ 	padding:10px;
+ 	padding-bottom:0px;
+ }
+ .field .title{
+ 	border-bottom: 1px dashed #edf0f5;
+    padding-bottom: 10px;
+    font-weight:600;
+ }
+ .form_cell_item{
+   font-size:14px;
+   text-align:left;
+   font-weight:300;
+}
+.form_cell_palceholder{
+   font-size:14px;
+   text-align:left;
+}
+
+</style>
+</head>
+<body style="background-color: white!important;">
+	<div id="toolbar">
+		<span id="btn_bak" class="btn_bak"></span>
+		<h1 class="toolbar_title">出国(境)管理</h1>
+		<span class="btn_toolbar_font save" style="color: #ffffff;font-size: 20px;" id="btn_save">提交</span>
+	</div>
+	
+	<div id="sys_innerscoll">
+	<!-- 表单区域 -->
+	   <div>
+		<!-- 基本信息table -->
+		  <div class="field">
+		  	<div class="title">老同志信息</div>
+		  	<table class="d_form_table" style="margin-top:10px;width:100%;">
+	            <tr>
+	            <!-- <td width="30%" rowspan="5" style="text-align:center;vertical-align:middle;line-height:100%;">
+	            	<div style="width:100%;height:100px;margin:0 auto;padding-right:10px;">
+	            	<img src="" id="imgPerson" style="width:100%;height:100%"></div>
+	            </td> -->
+            	<td  class="d_form_text"><span id="xm" ></span> </td>
+                
+				<td  class="d_form_text"><span id="sex" ></span></td>
+	                
+	         	</tr>
+	         	<tr>
+	         	    <td   class="d_form_text"><span id="zj" ></span></td>
+	               
+	            	<td   class="d_form_text"><span id="age" ></span>岁</td>
+	            </tr>
+				<tr>
+	            	<td  colspan="2" class="d_form_text"><span id="post" ></span></td>
+	         	</tr>
+	         	<tr>
+	            	 <td class="d_form_text"><span id="retired_type" ></span></td>
+	            	 <td class="d_form_text"><span id="dzb" ></span></td>      					 
+	         	</tr>
+	         </table>	
+		  </div>
+		  <div class="field">
+		  	<div class="title">证件信息</div>	
+		  	<table class="d_form_table" style="margin-top:10px;width:100%;">  	
+	         	<tr>
+	            	<td width="25%" class="d_form_text">普通护照</td>
+	                <td width="40%" class="d_form_text" align="center"><span id="passport_num"></span></td>
+	                <td width="25%" class="d_form_text" align="right"><span id="passport_date"></span></td>
+	           </tr>
+	           <tr>
+	            	<td class="d_form_text">港澳通行证</td>
+	                <td class="d_form_text" align="center"><span id="gangao_num"></span></td>
+	                <td class="d_form_text" align="right"><span id="gangao_date"></span></td>
+	         	</tr>	
+	         	<tr>
+	         		<td class="d_form_text">台湾通行证</td>
+	                <td class="d_form_text" align="center"><span id="taiwan_num"></span></td>
+	                <td class="d_form_text" align="right"><span id="taiwan_date"></span></td>
+	         	</tr>		        
+            </table>
+		  </div>
+		  <div class="field">
+		  	<div class="title">出入境信息</div>
+		  	 <form id="form_show">
+	       <input type="hidden" name="guid" id="guid" /> 
+	       <table class="d_form_table" style="margin-top:10px;width:100%;">     
+	       		<tr>
+	            	<td class="d_form_text" >出国（境）日期</td>
+	                <td><span  id="go_date"></span></td>	            	
+	         	</tr>   
+	         	<tr>
+	         		<td   class="d_form_text">返回日期</td>
+	                <td><span   id="back_date"  ></span></td>
+	         	</tr>
+	         	<tr>
+	            	<td class="d_form_text" width="40%">目的地&nbsp;</td>
+	                <td> <span id="destination" style="word-break: break-word;"></span>  </td>	            	
+	         	</tr>
+	         	<tr>
+	         	    <td class="d_form_text" >出国（境）事由</td>
+	                <td><span id="reason" style="word-break: break-word;"></span><span id="reasonqt" style="float: right;"></span> </td>	              
+	         	</tr>
+				<tr id="reasonqt_">
+	         		<td class="d_form_text">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	         		<td colspan='2'>
+	         			<input type="text" id="reasonqt" name="reasonqt"/>
+	         		</td>
+	         	</tr>
+	         	<tr>
+	         		<td class="d_form_text">办理进度&nbsp;&nbsp;<img src="../../../image/edit.png" style="width:20px;"/></td>
+	                <td >
+	                   
+	                   <select name="handle_state" id="handle_state" onchange="handle_state()"></select>
+	                  
+	                </td>
+	         	</tr>	
+	         	<tr id="handleqt_">
+	         		<td class="d_form_text">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	         		<td>
+	         			<input type="text" id="handleqt" name="handleqt"  maxlength="250" placeholder="请输入办理进度"/>
+	         		</td>
+	         	</tr>
+	         	<tr>
+	         	    <td colspan='2' class="d_form_text" >出国（境）证件是否交由组织统一管理&nbsp;&nbsp;<img src="../../../image/edit.png" style="width:20px;"/></td>
+	                <!--<td> <span id="cgjzj" style="word-break: break-word;"></span> 
+	                	<select id="cgjzj" name="cgjzj">
+	                		<option value=''>请选择</option>
+	                		<option value='01'>已交</option>
+	                		<option value='02'>未交</option>
+	                	</select>
+	                </td>-->
+	         	</tr>
+	         	<tr>
+	         		<td class="d_form_text" ></td>
+	                <td>
+	                	<select id="cgjzj" name="cgjzj">
+	                		<option value=''>请选择</option>
+	                		<option value='01'>已交</option>
+	                		<option value='02'>未交</option>
+	                	</select>
+	                </td>
+	         	</tr>
+	        </table>  	    	
+           </form>
+		  </div>	   
+		</div>	
+	</div>
+ 
+</body>
+</html>

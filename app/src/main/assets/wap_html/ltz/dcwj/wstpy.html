@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1">
+		<title>调查问卷</title>
+		<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+		<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+		<script type="text/javascript" src="../../js/ict.js"></script>
+		<script type="text/javascript" src="../../js/local.js"></script>
+		<script type="text/javascript">
+	$(function() {
+		$('#toolbar').toolbar();
+		var guid = getQueryStringRegExp("guid");
+		if (guid) {
+			sys_ajaxGet("/djypt/tpmx/default.do?method=wapShowTpmxy&guid="
+					+ guid, function(json) {
+				bind(json);
+			});
+		}
+
+		$("#btn_bak").click(function() {
+			sys_goURL("list_wstp.html?lb_dm=yd");
+		});
+	});
+
+
+</script>
+		<style type="text/css">
+.ui-toolbar-wrap { //
+	background-color: #FFB73E;
+	border: none !important;
+}
+
+.bx {
+	color: red;
+}
+.form_cell_item{
+	line-height:25px;
+}
+	</style>
+	</head>
+	<body>
+		<div id="toolbar">
+			<span id="btn_bak" class="btn_bak"></span>
+			<h1 class="toolbar_title">
+				调查问卷
+			</h1>
+		</div>
+		<div id="sys_innerscoll">
+			<div>
+				<form id="frm1">
+					<input type="hidden" name="guid" id="guid" />
+ 
+					<div class="c_form_show">
+						<div>
+							<div class="form_cell_label"
+								style="width: 85px; ">
+								问卷标题：
+							</div>
+							<div class="form_cell_item">
+								<div id="zt"></div>
+							</div>
+
+						</div>
+				 
+						<div>
+							<div class="form_cell_label"
+								style="width: 85px; ">
+								题目类型：
+							</div>
+							<div class="form_cell_item">
+								<div id="lxmc"></div>
+							</div>
+						</div>
+						
+						 
+						<div>
+							<div class="form_cell_label"
+								style="width: 85px; ">
+								答题时间：
+							</div>
+							<div class="form_cell_item">
+								<span id="tpsj"></span>
+							</div>
+						</div>
+						
+						<div>
+							<div class="form_cell_label"
+								style="width: 85px; ">
+								选择项：
+							</div>
+							<div class="form_cell_item">
+								<span id="xzx"></span>
+							</div>
+						</div>
+						
+					</div>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+<title>生日提醒</title>
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+<link rel="stylesheet" type="text/css" href="../../css/list.css" />
+
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<script type="text/javascript" src="../../js/list.js"></script>
+<script type="text/javascript" src="../../js/touchslider.dev.js"></script>
+<script type="text/javascript">
+	var nm = getQueryStringRegExp("nm");
+	var lb_dm = getQueryStringRegExp("lb_dm");
+	var _list = {};
+
+	$(function() {
+		//生成toolbar
+		$('#toolbar').toolbar();
+
+		$(".c_tabs_text").eq(1).addClass("c_tabs_active");
+		
+		sys_renderList('table_list', '/ltz/wapPerson/default.do?method=noticeBirth&page_goto=', {
+			lb_dm : 1
+		}, _list);
+
+		sys_ajaxGet("/ltz/wapPerson/default.do?method=noticeBirthNum", function(json) {
+			$('#birthNum').html(json.noticeBirthNum);
+		});
+
+
+	});
+	function callback_trclick_table_list(param) {
+	}
+	// 点击tab页刷新画面显示相应tab页内容一览list
+	function getNm(dm) {
+		if (dm == "0") {
+			sys_goURL(getBaseURL()+"ltz/notice/block.html?lb_dm=" + lb_dm);
+		} else if (dm == "1") {
+			sys_goURL(getBaseURL()+"ltz/notice/noticeBirth.html?lb_dm=" + lb_dm);
+		}
+	}
+	
+</script>
+
+<style type="text/css">
+.ui-toolbar-wrap {
+	border: none !important;
+}
+
+
+
+
+</style>
+
+</head>
+<body>
+
+	<div id="toolbar">
+		<span class="btn_bak" onclick="sys_goURL('block.html');"></span>
+		<h1 class="toolbar_title">通知公告</h1>
+	</div>
+
+	<div class="c_tabs div_other_40" id="div_tabs">
+		<div id='div_list0'>
+			<div class='c_tabs_text' onclick=getNm(0)>通知公告</div>
+		</div>
+		<div id='div_list1'>
+			<div class='c_tabs_text' onclick=getNm(1)>生日提醒<span id="birthNum" style="padding-left:5px;"></span></div>
+		</div>
+		
+	</div>
+
+	<div class="ui-refresh" id="div_table_list">
+		<ul class="data-list" id="table_list" style="list-style-type:none">
+			<li style="display: none;">
+				<div style="display: none;">{guid}</div> <!-- 点击行的参数 -->
+				<div class="list_row_con"
+					style="height:55px;background-color: #ffffff;">
+					<div class="list_row_col2"
+						style="margin-top:20px;margin-left: 5px;">
+						<div class="list_row_col2_1 overflow">{xm}{noticeText}天过生日</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<div class="ui-refresh-down"></div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+    <title>课程详情</title>
+    <link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/base.css" />
+    <link type="text/css" rel="stylesheet" href="../../css/iconfont/iconfont.css" />
+    <script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+    <script type="text/javascript" src="../../js/ict.js"></script>
+    <script type="text/javascript" src="../../js/local.js"></script>
+    <script type="text/javascript">
+        var guid = getQueryStringRegExp("guid");
+        var clientWidth=window.innerWidth;
+        $(function(){
+            //生成toolbar
+            $('#toolbar').toolbar();
+
+            sys_ajaxGet("/ltz/lndx/default.do?method=show",{guid:guid},function(json){
+                bind(json);
+                var _height = getListHeight();
+                $("#sys_innerscoll").height(window.innerHeight-_height);
+                var innerscroll = new iScroll("sys_innerscoll",{click:true});
+                var title_mc="课程详情";
+                //$(".toolbar_title").text(json.lbmc);
+                LoadBmList(guid);
+            });
+        });
+        //加载报名列表
+        function LoadBmList(kcid){
+            sys_ajaxGet('/ltz/lndx/default.do?method=getBmListApp&page_size=10000',{kcid:kcid},function(json){
+                //bind(json);
+                var msgList = json.msgList;
+                if(msgList.length>0){
+                    bindBmList(msgList);
+                }
+
+            });
+        }
+        //绑定报名列表
+        function bindBmList(list){
+            if(list.length>0){
+                var sspHtml="";
+                for(var i=0;i<list.length;i++){
+                    sspHtml+="<li onclick=bmxq('"+list[i].bmrid+"')><div class='list_row_con' style='min-height:40px;background-color: #ffffff;' >";
+                    sspHtml+="<div class='list_row_col1' style='width:15px;'></div><div class='list_row_col2' style='width:100%;'>";
+                    sspHtml+="<div class='list_row_col2_1' style='margin-top: 10px;'><span style='width: 16%;margin-left: 7%;'>"+list[i].xh+"</span>";
+                    sspHtml+="<span class='overflow' style='width:25%;'>"+list[i].xm+"</span><span style='text-align: center;'>"+list[i].cjsj1+"</span>";
+                    sspHtml+="</div></div></div></li>";
+                }
+                $('#table_list').html("");
+                $('#table_list').html(sspHtml);
+                var _height = getListHeight();
+                $("#sys_innerscoll").height(window.innerHeight-_height);
+                var innerscroll = new iScroll("sys_innerscoll",{click:true});
+            }
+        }
+        function bmxq(bmrid) {
+            sys_goURL("bmxq.html?bmrid="+bmrid+"&guid="+guid);
+        }
+        function go_back(){
+            sys_goURL("kcxx.html");
+        }
+    </script>
+
+    <style type="text/css">
+        .c_item_value{
+            padding-top: 15px;
+            font-size:.8em;
+        }
+        .c_item_container{
+            min-height: 46px;
+            border-bottom: 1px solid #DDD;
+
+        }
+
+        .ui-toolbar-wrap{
+        //background-color: #FFB73E;
+            border: none !important;
+        }
+        .c_div_nr{
+             margin: 20px;
+        }
+        #table_list span{
+            display: inline-block;
+        }
+        .form_cell_label{
+            color:#000000;
+            width: 30%;
+            padding-left: 30px;
+        }
+    </style>
+</head>
+<body>
+<div id="toolbar">
+    <span class="btn_bak"  onclick="go_back();"></span>
+    <h1 class="toolbar_title">课程详情</h1>
+</div>
+
+<div id="sys_innerscoll">
+    <form id="form_show">
+        <input type="hidden" name="guid" id="guid" />
+        <div class="c_form_show">
+            <div style="margin-top:10px;">
+                <div class="form_cell_label" ><span>课程名称</span></div>
+                <div class="form_cell_item">
+                    <span name="kcmc" id="kcmc" style="width: 30%;color: #adadad;"></span>
+                </div>
+            </div>
+            <div style="margin-top:10px;">
+                <div class="form_cell_label" ><span>任课老师</span></div>
+                <div class="form_cell_item">
+                    <span name="rkls" id="rkls" style="width: 30%;color: #adadad;"></span>
+                </div>
+            </div>
+            <div style="margin-top:10px;">
+                <div class="form_cell_label" ><span>课程简介</span></div>
+            </div>
+            <div style="margin-top:10px;">
+                <div class="form_cell_item">
+                    <span name="kcjj" id="kcjj" style="width: 93%;color: #adadad;display: inline-block;padding: 0 20px 0 15px;"></span>
+                </div>
+            </div>
+            <div style="margin-top:10px;">
+                <div class="form_cell_label" ><span>老师简介</span></div>
+            </div>
+            <div style="margin-top:10px;">
+                <div class="form_cell_item">
+                    <span name="lsjj" id="lsjj" style="width: 93%;color: #adadad;display: inline-block;padding: 0 20px 0 15px;"></span>
+                </div>
+            </div>
+            <!--<div style="margin-top:10px;">
+                <div class="form_cell_label" ><span>开课时间</span></div>
+                <div class="form_cell_item">
+                    <span name="kksj" id="kksj" style="width: 30%;color: #adadad;"></span>
+                </div>
+            </div>
+            <div style="margin-top:10px;">
+                <div class="form_cell_label" ><span>结课时间</span></div>
+                <div class="form_cell_item">
+                    <span name="jksj" id="jksj" style="width: 30%;color: #adadad;"></span>
+                </div>
+            </div>-->
+            <div style="margin-top:10px;">
+                <div class="form_cell_label" ><span>上课地点</span></div>
+                <div class="form_cell_item">
+                    <span name="skdd" id="skdd" style="width: 30%;color: #adadad;"></span>
+                </div>
+            </div>
+            <div style="margin-top:10px;">
+                <div class="form_cell_label" ><span>上课频次</span></div>
+                <div class="form_cell_item">
+                    <span name="skpc" id="skpc" style="width: 30%;color: #adadad;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!--回复列表-->
+        <p style="font-size: 20px;margin: 10px 0 0 20px;">报名情况</p>
+        <div style="margin-top: 10px;">
+            <table style="margin-left: 2%;width: 96%;">
+                <tbody>
+                <tr style="border-bottom: 1px solid #b0aea6;">
+                    <td style="width: 8%;text-align: center;">序号</td>
+                    <td style="width: 10%;text-align: center;">姓名</td>
+                    <!--<th style="width: 8%;border-left: 1px solid #b0aea6;">性别</th>-->
+                    <!--<th style="width: 15%;border-left: 1px solid #b0aea6;">原单位</th>-->
+                    <!--<th style="width: 10%;border-left: 1px solid #b0aea6;">职级</th>-->
+                    <!--<th style="width: 16%;border-left: 1px solid #b0aea6;">退(离)休</th>-->
+                    <td style="width: 18%;text-align: center;">报名时间</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class='ui-refresh' id='div_table_list'>
+            <ul class='data-list' id='table_list' style='list-style-type:none'>
+            </ul>
+        </div>
+        <div style="height: 20px;"></div>
+    </form>
+</div>
+</body>
+</html>

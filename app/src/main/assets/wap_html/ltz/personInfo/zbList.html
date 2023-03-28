@@ -1,0 +1,238 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1">
+<title>老同志信息</title>
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+<link rel="stylesheet" type="text/css" href="../../css/list.css" />
+<link href="style.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<script type="text/javascript">
+	var innerscroll = null;
+	var dm = getQueryStringRegExp("dm");
+	var nm = getQueryStringRegExp("nm");
+	$(function() {
+		$('.button').button();
+		innerscoll();
+		$('#toolbar').toolbar();
+		if (nm == '') {
+			nm = 0;
+		}
+		$(".c_tabs_text").eq(nm).addClass("c_tabs_active");
+		//加载人员事件
+		$('.container').show();
+		//选择人员 start
+		$('body').on('click', '.city-list p', function() {
+			sys_showDetail("/ltz/personInfo/showxx.html?qbxxid=" + $(this).attr('id') + "&retURL=zbList.html");
+		});
+		//点击索引查询人员
+		$('body').on('click', '.letter a', function() {
+			var s = $(this).html();
+			innerscroll.scrollToElement('#' + s + '1', 100)
+			$("#showLetter span").html(s);
+			$("#showLetter").show();
+			setTimeout(function() {
+				$("#showLetter").hide();
+			}, 500);
+		});
+
+		sys_ajaxGet("/ltz/wapPerson/default.do?method=ltzListAll", function(json) {
+			var ltzList = json.ltzList;
+			if (ltzList) {
+				for (var i = 0; i < ltzList.length; i++) {
+					var yhHtml = "<p class='personP' id='" + ltzList[i].yhid + "'>" + ltzList[i].xm + "</p>"
+					$("#" + ltzList[i].py + "1").append(yhHtml);
+				}
+			}
+			innerscroll.refresh();
+		});
+	});
+
+	function innerscoll() {
+		var _height = getListHeight();
+		$("#sys_innerscoll").height(window.innerHeight - _height - 50);
+		innerscroll = new iScroll("sys_innerscoll", {
+			click : true
+		});
+		sys_autoTextarea(innerscroll);
+	}
+	function gourl(param) {
+		if (param == "ltzxx") {
+			sys_goURL("zbList.html?nm=0");
+		} else if (param == "tj") {
+			sys_goURL("chart.html?nm=1");
+		} 
+	}
+	function go_back() {
+		sys_goURL("../../main.html");
+	}
+	function search() {
+		var user_search = $("#user_search").val();
+		sys_ajaxGet("/ltz/wapPerson/default.do?method=ltzListAll&user_search=" + user_search, function(json) {
+			var ltzList = json.ltzList;
+			if (ltzList) {
+				$('.personP').remove();
+				for (var i = 0; i < ltzList.length; i++) {
+					var yhHtml = "<p class='personP' id='" + ltzList[i].yhid + "'>" + ltzList[i].xm + "</p>"
+					$("#" + ltzList[i].py + "1").append(yhHtml);
+				}
+				innerscroll.refresh();
+				if (ltzList.length > 0) innerscroll.scrollToElement('#' + ltzList[0].py + '1', 100);
+
+			}
+
+		});
+	}
+</script>
+
+</head>
+<body>
+	<div id="toolbar">
+		<span class="btn_bak" onclick="go_back();"></span>
+		<h1 class="toolbar_title">老同志信息</h1>
+		<span class="btn_toolbar_font"></span>
+	</div>
+	<div class="c_tabs div_other_40" id="div_tabs">
+		<div id='div_list0'>
+			<div class='c_tabs_text' onclick="gourl('ltzxx')">老同志信息</div>
+		</div>
+		<div id='div_list1'>
+			<div class='c_tabs_text' onclick="gourl('tj')">数据统计</div>
+		</div>
+	</div>
+	<div id="div_search" class="list_div_search div_other_50" style="z-index: 1000;">
+		<input type="text" id="user_search" class="list_search_input"
+			style="width: 93%;margin-left: 3%;" placeholder="请输入姓名">
+		<div class="list_search_img" id="btn_search" onclick="search()"></div>
+	</div>
+	<!--显示点击的是哪一个字母-->
+	<div id="showLetter" class="showLetter">
+		<span>A</span>
+	</div>
+	<!--人员索引查询-->
+	<div class="letter" id="main_left">
+		<ul>
+			<li><a href="javascript:;">A</a></li>
+			<li><a href="javascript:;">B</a></li>
+			<li><a href="javascript:;">C</a></li>
+			<li><a href="javascript:;">D</a></li>
+			<li><a href="javascript:;">E</a></li>
+			<li><a href="javascript:;">F</a></li>
+			<li><a href="javascript:;">G</a></li>
+			<li><a href="javascript:;">H</a></li>
+			<li><a href="javascript:;">J</a></li>
+			<li><a href="javascript:;">K</a></li>
+			<li><a href="javascript:;">L</a></li>
+			<li><a href="javascript:;">M</a></li>
+			<li><a href="javascript:;">N</a></li>
+			<li><a href="javascript:;">P</a></li>
+			<li><a href="javascript:;">Q</a></li>
+			<li><a href="javascript:;">R</a></li>
+			<li><a href="javascript:;">S</a></li>
+			<li><a href="javascript:;">T</a></li>
+			<li><a href="javascript:;">W</a></li>
+			<li><a href="javascript:;">X</a></li>
+			<li><a href="javascript:;">Y</a></li>
+			<li><a href="javascript:;">Z</a></li>
+		</ul>
+	</div>
+	<div id="sys_innerscoll">
+		<div>
+			<!--人员列表-->
+			<div class="container">
+				<div class="city">
+					<!-- <div class="city-list" id="table_list_a">
+						<span class="city-letter" id="A1">A</span>
+						<p data-id="{bmid}">{bmmc}</p>
+					</div> -->
+					<div id="table_list_a" class="city-list">
+						<span class="city-letter" id="A1">A</span>
+					</div>
+
+					<div class="city-list">
+						<span class="city-letter" id="B1">B</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="C1">C</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="D1">D</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="E1">E</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="F1">F</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="G1">G</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="H1">H</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="I1">I</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="J1">J</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="K1">K</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="L1">L</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="M1">M</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="N1">N</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="O1">O</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="P1">P</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="Q1">Q</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="R1">R</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="S1">S</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="T1">T</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="U1">U</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="V1">V</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="W1">W</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="X1">X</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="Y1">Y</span>
+					</div>
+					<div class="city-list">
+						<span class="city-letter" id="Z1">Z</span>
+					</div>
+					<div style="height:20px;"></div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>
+

@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+<title></title>
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<script type="text/javascript">
+	var guid = getQueryStringRegExp("guid");
+	var innerscroll = null;
+	$(function() {
+		$('#toolbar').toolbar();
+		 
+		sys_ajaxGet("/ltz/zfww/default.do?method=yswwshow&guid=" + guid, function(json) {
+			bind(json);
+		});
+		
+		$("#btn_bak").click(function() {
+			sys_goURL("ysww.html");
+		});
+		
+		$("#btn_upate").click(function(){
+			sys_goURL("yswwsave.html?guid="+guid+"&from=show");
+		});
+		
+		
+		var _height = getListHeight();
+		$("#sys_innerscoll").height(window.innerHeight - _height);
+		innerscroll = new iScroll("sys_innerscoll", {
+			click : true
+		});
+		
+	});
+	
+ 
+</script>
+<style type="text/css">
+
+.ui-toolbar-wrap{
+	border:0px;
+}
+.form_cell_label{
+	color:#000000;
+}
+
+ .form-control {
+ 	color: #726d6d;
+}
+
+ .c_form_show>div {
+    position: relative;
+}
+#leave_msg_title {
+    width: 100px;
+    margin-right: 10px;
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 2px solid red;
+    padding-top: 5px;
+    position: absolute;
+    bottom: 0;
+}
+.leave_msg_title_star {
+    float: left;
+    width: 22px;
+    height: 25px;
+    background-image: url(logo.png);
+    background-repeat: round;
+    background-size: 100% 100%;
+}
+.leave_msg_title_lable {
+    float: left;
+    height: 25px;
+    margin-left: 5px;
+    color: red;
+    vertical-align: bottom;
+}
+</style>
+</head>
+<body style="background-color: white!important;">
+	<div id="toolbar">
+		<span id="btn_bak" class="btn_bak"></span>
+		<h1 class="toolbar_title">遗属慰问</h1>
+		<span class="btn_toolbar_font" style="color: #ffffff;font-size: 20px;" id="btn_upate">修改</span>
+	</div>
+	
+	<div id="sys_innerscoll">
+		<div style="padding:10px;">
+			<form id="form_show">
+				<div class="c_form_show">
+					<div>
+						<div class="form_cell_label">老同志姓名&nbsp;</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="xm" id="xm" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">遗属姓名</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="po_xm" id="po_xm" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">性别</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="po_sex" id="po_sex" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">出生日期</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="po_birthday" id="po_birthday" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">家庭住址</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="home" id="home" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">联系电话</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="sj" id="sj" />
+						</div>
+					</div>
+					<!-- 走访详情 -->
+					<div>
+						<div id="leave_msg_title">
+							<div class="leave_msg_title_star"></div>
+							<div class="leave_msg_title_lable"><span class="zflx_title_2"></span></div>
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">慰问工作人员</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="zfld" id="zfld" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">慰问时间</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="zfsj" id="zfsj" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">慰问金</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="wwj" id="wwj" />
+						</div>
+					</div>
+					<div>
+						<div class="form_cell_label">反映问题</div>
+						<div class="form_cell_item">
+							<input type="text" class="form-control" name="fywt" id="fywt" />
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

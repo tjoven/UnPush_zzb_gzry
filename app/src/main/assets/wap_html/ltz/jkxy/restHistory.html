@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0,maximum-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/list.css" />
+    <link rel="stylesheet" type="text/css" href="../../pub.css" />
+    <link rel="stylesheet" type="text/css" href="../../main.css" />
+    <link rel="stylesheet" type="text/css" href="../zhfw/zhfw.css" />
+    <script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+    <script type="text/javascript" src="../../js/ict.js"></script>
+    <script type="text/javascript" src="../../js/local.js"></script>
+    <script type="text/javascript" src="../../js/list.js"></script>
+    <script type="text/javascript" src="../../js/touchslider.dev.js"></script>
+    <link href="../../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript">
+        var innerscroll = null;
+        var _list ={};
+        var date=new Date;
+        var year=date.getFullYear();
+        var ltzid = getQueryStringRegExp("ltzid");
+        $(function() {
+            $('#toolbar').toolbar();
+            //调整搜索框宽度
+            // $("#cx_xm").width($(document).width()-20);
+            sys_renderList('table_list', "/ltz/jkxy/jkxy/default.do?method=list&page_size=10&page_goto=", {ltzid:ltzid}, _list);
+        });
+
+        function back(){
+            sys_goURL("xyjl.html");
+        }
+
+    </script>
+    <title>健康休养</title>
+</head>
+<body style="background-color:#ffffff;">
+<div id="toolbar" >
+    <span id="btn_bak" class="btn_bak" onclick="back();" ></span>
+    <h1 class="toolbar_title" >休养记录</h1>
+</div>
+<div class="ui-refresh" id="div_table_list">
+    <!--<div class="ui-refresh-up" id="ui-refresh-up"></div>-->
+    <ul class="data-list" id="table_list" style="list-style-type:none">
+        <li style="display: none;" >
+            <div style="display: none;">{guid}</div>
+
+            <!-- 点击行的参数 -->
+            <div class="list_row_con" style="min-height:65px;background-color: #ffffff;" >
+
+                <div class="list_row_col1" style="width:15px;"></div>
+                <div class="list_row_col2" style="width:100%;">
+                    <div class="list_row_col2_1 overflow" style="margin-top: 18px;">
+                        <div style="width:25%;display:inline-block;">{xm}</div>
+                        <div style="width:20%;display:inline-block;text-align: right;">{age}岁</div>
+                        <div style="width:25%;display:inline-block;text-align: right;">{tlx}</div>
+                        <div style="width:25%;display:inline-block;text-align: right;">{zj}</div>
+                    </div>
+                    <div class="list_row_col2_2 overflow" style="top:10px;">
+                        <div style="width:33%;display:inline-block;">{xysjq}</div>
+                        <div style="width:31%;display:inline-block;text-align: center;">{xydd}</div>
+                        <div style="width:33%;display:inline-block;text-align: right;">{peiou}（带配偶）</div>
+                    </div>
+                </div>
+                <div class="list_row_col1" style="width:15px;"></div>
+            </div>
+        </li>
+    </ul>
+    <div class="ui-refresh-down"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+<link rel="stylesheet" type="text/css" href="../../css/list.css" />
+<script type="text/javascript" src="../../js/list.js"></script>
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<script type="text/javascript" src="../../js/touchslider.dev.js"></script>
+<script type="text/javascript">
+	var _list = {};
+	var zflx = null;
+	$(function() {
+		$('#toolbar').toolbar();
+		sys_renderList('table_list', "/ltz/zbjz/default.do?method=wapList&page_size=10&page_goto=", {}, _list);				
+		$("#btn_add").click(function(){
+			sys_goURL("save.html");
+		});
+	});
+	
+	function callback_trclick_table_list(param) {	
+		sys_goURL("show.html?guid=" + param);
+	}
+	function go_back(){	  
+		 sys_goURL("../zhfw.html");  		
+	}
+	
+</script>
+
+<style type="text/css">
+ .ui-toolbar-wrap{
+	border:0px;
+}
+  .add{
+            width:50px;
+            height: 50px;
+            background:url("../../img/jiahao.png") no-repeat;
+            background-position: center center;
+            background-size: 28px 28px;
+            border: 0px !important;
+        }
+ .list_row_con{
+ 	height:65px;
+ 	min-height:65px;
+ 	background-color: #ffffff;
+ }
+</style>
+
+</head>
+<body>
+	<div id="toolbar">
+		<span class="btn_bak"  onclick="go_back();"></span>
+		<h1 class="toolbar_title">重病救助</h1>
+		<span class="btn_toolbar_font add" id="btn_add" style="color:#ffffff;"></span>
+	</div>
+	
+      <div class="ui-refresh" id="div_table_list">
+		<ul class="data-list" id="table_list" style="list-style-type:none">
+			<li style="display: none;" >
+				<div style="display: none;">{guid}</div>
+				<div class="list_row_con" >
+					<div class="list_row_col1" style="width:20px;"></div>
+					<div class="list_row_col2" style="margin-top:6px;">
+						<div class="list_row_col2_1 overflow" >
+						{xm} <span style="display:block; width:50%; float:right;">金额：{jzje}</span>
+					 	</div>
+					 	<div class="list_row_col2_1 overflow" >
+					 	{jzsj} <span style="display:block; width:50%; float:right;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">原因：{jzyy}</span>
+						 </div>
+					</div>
+					<div class="list_row_col3" style="width:30px;">
+					</div>
+				</div>
+			</li>
+		</ul>
+		<div class="ui-refresh-down"></div>
+	</div>
+	
+</body>
+</html>

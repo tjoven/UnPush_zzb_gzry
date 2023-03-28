@@ -1,0 +1,590 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+<title>老同志信息统计</title>
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+<link rel="stylesheet" type="text/css" href="../../pub.css" />
+
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="../../js/echarts-3.6.2/echarts.min.js"></script>
+
+<style type="text/css">
+html, body {
+	width: 100%;
+	height: 100%;
+	background-color: #FFFFFF;
+	font-family: "微软雅黑";
+}
+</style>
+
+<script type="text/javascript">
+	var innerscroll = null;
+	var dm = getQueryStringRegExp("dm");
+	var nm = getQueryStringRegExp("nm");
+	var _list = {};
+	$(function() {
+		$('#toolbar').toolbar();
+		if (nm == '') {
+			nm = 1;
+		}
+		innerscoll();
+		$(".c_tabs_text").eq(nm).addClass("c_tabs_active");
+		sys_ajaxGet("/ltz/statisticsww/default.do?method=personData");
+		retireType();
+		sexType();
+		levelType();
+		nationType();
+		partyType();
+		ageType();
+		innerscroll.refresh();
+		$('#dialog_query').dialog({
+			autoOpen : false,
+			closeBtn : false,
+			buttons : {
+				'确定' : function() {
+					retireType();
+					sexType();
+					levelType();
+					nationType();
+					partyType();
+					ageType();
+					innerscroll.refresh();
+					this.close();
+				},
+				'取消' : function() {
+					this.close();
+				}
+			}
+		}).dialog('this')._options['_wrap'].addClass('login-dialog');
+
+		$('#btn_query').click(function() {
+			$('#dialog_query').dialog('open');
+		});
+		
+	});
+	
+	function innerscoll() {
+		var _height = getListHeight();
+		$("#sys_innerscoll").height(window.innerHeight - _height);
+		innerscroll = new iScroll("sys_innerscoll", {
+			click : true
+		});
+	}
+	
+
+	function go_back() {
+		sys_goURL("../../main.html");
+	}
+	
+	
+
+	function gourl(param) {
+		if (param == "ltzxx") {
+			sys_goURL("zbList.html?nm=0");
+		} else if (param == "tj") {
+			sys_goURL("chart.html?nm=1");
+		} 
+	}
+	//1,性别
+	function sexType() {
+		var sex_chart = echarts.init(document.getElementById('sex_chart'));
+		sys_ajaxGet("/ltz/statisticsww/default.do?method=sex&retired_type="
+				+ $("input[name = 'retired_type']:checked ").val()
+				+ "&retired_post="
+				+ $("input[name = 'retired_post']:checked ").val() + "&mz="
+				+ $("input[name = 'mz']:checked ").val() + "&age1="
+				+ $("#age1").val() + "&age2=" + $("#age2").val(),
+				function(json) {
+					var lbx = [];
+					var seriesData = [];
+					for ( var key in json.data) {
+						var lbMap = {
+							"value" : json.data[key],
+							"name" : key
+						};
+						seriesData.push(lbMap);
+						lbx.push(key);
+					}
+					if (json.data) {
+						sex_chart.setOption({
+							
+							tooltip : {
+								trigger : 'item',
+								formatter : "{b} : {c}人 ({d}%)"
+							},
+							legend : {
+								top : '30%',
+								left : '75%',
+								data : seriesData,
+								itemWidth : 10,
+								itemHeight : 10,
+							},
+							series : [ {
+								type : 'pie',
+								data : seriesData,
+								radius : [ '0', '75%' ],
+								center : [ '50%', '50%' ],
+								itemStyle : {
+									normal : {
+										label : {
+											show : true,
+											position : 'inside',
+											formatter : '{c}人\n{d}%'
+										},
+										color : function(params) {
+											var colorList = [ '#FF6633',
+													'#FF99C1' ];
+											return colorList[params.dataIndex]
+										}
+
+									}
+								},
+							} ]
+						});
+						sex_chart.hideLoading();
+					}
+					$(window).resize(function() {
+						sex_chart.resize();
+					});
+				});
+	}
+	//2,退离休
+	function retireType() {
+		var sex_chart = echarts.init(document.getElementById('retire_chart'));
+		sys_ajaxGet("/ltz/statisticsww/default.do?method=retire&retired_type="
+				+ $("input[name = 'retired_type']:checked ").val()
+				+ "&retired_post="
+				+ $("input[name = 'retired_post']:checked ").val() + "&mz="
+				+ $("input[name = 'mz']:checked ").val() + "&age1="
+				+ $("#age1").val() + "&age2=" + $("#age2").val(),
+				function(json) {
+					var lbx = [];
+					var seriesData = [];
+					for ( var key in json.data) {
+						var lbMap = {
+							"value" : json.data[key],
+							"name" : key
+						};
+						seriesData.push(lbMap);
+						lbx.push(key);
+					}
+					if (json.data) {
+						sex_chart.setOption({
+							
+							tooltip : {
+								trigger : 'item',
+								formatter : "{b} : {c}人 ({d}%)"
+							},
+							legend : {
+								top : '30%',
+								left : '70%',
+								x : 'right',
+								data : lbx,
+								itemWidth : 10,
+								itemHeight : 10,
+							},
+							series : [ {
+								type : 'pie',
+								data : seriesData,
+								radius : [ '0', '75%' ],
+								center : [ '50%', '50%' ],
+								itemStyle : {
+									normal : {
+										label : {
+											show : true,
+											position : 'inside',
+											formatter : '{c}人\n{d}%'
+										},
+										color : function(params) {
+											var colorList = [ '#FFAD51',
+													'#FF4E38' ];
+											return colorList[params.dataIndex]
+										}
+
+									}
+								},
+							} ]
+						});
+						sex_chart.hideLoading();
+					}
+					$(window).resize(function() {
+						sex_chart.resize();
+					});
+				});
+	}
+	//3,职级
+	function levelType() {
+		var sex_chart = echarts.init(document.getElementById('level_chart'));
+		sys_ajaxGet("/ltz/statisticsww/default.do?method=level&retired_type="
+				+ $("input[name = 'retired_type']:checked ").val()
+				+ "&retired_post="
+				+ $("input[name = 'retired_post']:checked ").val() + "&mz="
+				+ $("input[name = 'mz']:checked ").val() + "&age1="
+				+ $("#age1").val() + "&age2=" + $("#age2").val(),
+				function(json) {
+					var lbx = [];
+					var seriesData = [];
+					for ( var key in json.data) {
+						var lbMap = {
+							"value" : json.data[key],
+							"name" : key
+						};
+						seriesData.push(lbMap);
+						lbx.push(key);
+					}
+					if (json.data) {
+						sex_chart.setOption({
+							
+							tooltip : {
+								trigger : 'item',
+								formatter : "{b} : {c}人 ({d}%)"
+							},
+							legend : {
+								top : '30%',
+								left : '70%',
+								x : 'right',
+								data : lbx,
+								itemWidth : 10,
+								itemHeight : 10,
+							},
+							series : [ {
+								type : 'pie',
+								data : seriesData,
+								radius : [ '0', '75%' ],
+								center : [ '50%', '50%' ],
+								itemStyle : {
+									normal : {
+										label : {
+											show : true,
+											position : 'inside',
+											formatter : '{c}人\n{d}%'
+										},
+										color : function(params) {
+											var colorList = [ '#990000',
+													'#CC6699','#FF511C', '#FF9966' ];
+											return colorList[params.dataIndex]
+										}
+
+									}
+								},
+							} ]
+						});
+						sex_chart.hideLoading();
+					}
+					$(window).resize(function() {
+						sex_chart.resize();
+					});
+				});
+	}
+	//4,民族
+	function nationType() {
+		var sex_chart = echarts.init(document.getElementById('nation_chart'));
+		sys_ajaxGet("/ltz/statisticsww/default.do?method=nation&retired_type="
+				+ $("input[name = 'retired_type']:checked ").val()
+				+ "&retired_post="
+				+ $("input[name = 'retired_post']:checked ").val() + "&mz="
+				+ $("input[name = 'mz']:checked ").val() + "&age1="
+				+ $("#age1").val() + "&age2=" + $("#age2").val(),
+				function(json) {
+					var lbx = [];
+					var seriesData = [];
+					for ( var key in json.data) {
+						var lbMap = {
+							"value" : json.data[key],
+							"name" : key
+						};
+						seriesData.push(lbMap);
+						lbx.push(key);
+					}
+					if (json.data) {
+						sex_chart.setOption({
+							
+							tooltip : {
+								trigger : 'item',
+								formatter : "{b} : {c}人 ({d}%)"
+							},
+							legend : {
+								top : '30%',
+								left : '75%',
+								x : 'right',
+								data : lbx,
+								itemWidth : 10,
+								itemHeight : 10,
+							},
+							series : [ {
+								type : 'pie',
+								data : seriesData,
+								radius : [ '0', '75%' ],
+								center : [ '50%', '50%' ],
+								itemStyle : {
+									normal : {
+										label : {
+											show : true,
+											position : 'inside',
+											formatter : '{c}人\n{d}%'
+										},
+										color : function(params) {
+											var colorList = [ '#e37839',
+													'#d5b931' ];
+											return colorList[params.dataIndex]
+										}
+
+									}
+								},
+							} ]
+						});
+						sex_chart.hideLoading();
+					}
+					$(window).resize(function() {
+						sex_chart.resize();
+					});
+				});
+	}
+	//5,党员比例
+	function partyType() {
+		var sex_chart = echarts.init(document.getElementById('party_chart'));
+		sys_ajaxGet("/ltz/statisticsww/default.do?method=party&retired_type="
+				+ $("input[name = 'retired_type']:checked ").val()
+				+ "&retired_post="
+				+ $("input[name = 'retired_post']:checked ").val() + "&mz="
+				+ $("input[name = 'mz']:checked ").val() + "&age1="
+				+ $("#age1").val() + "&age2=" + $("#age2").val(),
+				function(json) {
+					var lbx = [];
+					var seriesData = [];
+					for ( var key in json.data) {
+						var lbMap = {
+							"value" : json.data[key],
+							"name" : key
+						};
+						seriesData.push(lbMap);
+						lbx.push(key);
+					}
+					if (json.data) {
+						sex_chart.setOption({
+							
+							tooltip : {
+								trigger : 'item',
+								formatter : "{b} : {c}人 ({d}%)"
+							},
+							legend : {
+								top : '30%',
+								left : '75%',
+								x : 'right',
+								data : lbx,
+								itemWidth : 10,
+								itemHeight : 10,
+							},
+							series : [ {
+								type : 'pie',
+								data : seriesData,
+								radius : [ '0', '75%' ],
+								center : [ '50%', '50%' ],
+								itemStyle : {
+									normal : {
+										label : {
+											show : true,
+											position : 'inside',
+											formatter : '{c}人\n{d}%'
+										},
+										color : function(params) {
+											var colorList = [ '#e3414b',
+													'#ffc57b' ];
+											return colorList[params.dataIndex]
+										}
+
+									}
+								},
+							} ]
+						});
+						sex_chart.hideLoading();
+					}
+					$(window).resize(function() {
+						sex_chart.resize();
+					});
+				});
+	}
+	//6,年龄
+	function ageType() {
+		var sex_chart = echarts.init(document.getElementById('age_chart'));
+		sys_ajaxGet("/ltz/statisticsww/default.do?method=age&retired_type="
+				+ $("input[name = 'retired_type']:checked ").val()
+				+ "&retired_post="
+				+ $("input[name = 'retired_post']:checked ").val() + "&mz="
+				+ $("input[name = 'mz']:checked ").val() + "&age1="
+				+ $("#age1").val() + "&age2=" + $("#age2").val(),
+				function(json) {
+					var lbx = [];
+					var seriesData = [];
+					for ( var key in json.data) {
+						var lbMap = {
+							"value" : json.data[key],
+							"name" : key
+						};
+						seriesData.push(lbMap);
+						lbx.push(key);
+					}
+					if (json.data) {
+						sex_chart.setOption({
+							
+							tooltip : {
+								trigger : 'item',
+								formatter : "{b} : {c}人 ({d}%)"
+							},
+							legend : {
+								top : '5%',
+								left : '80%',
+								x : 'right',
+								data : lbx,
+								itemWidth : 10,
+								itemHeight : 10,
+							},
+							series : [ {
+								type : 'pie',
+								data : seriesData,
+								radius : [ '0', '60%' ],
+								center : [ '50%', '50%' ],
+								itemStyle : {
+									normal : {
+										label : {
+											show : true,
+											position : 'top',
+											formatter : '{c}人\n{d}%'
+										},
+										color : function(params) {
+											var colorList = [ '#970011',
+													'#AD0678', '#FF511C',
+													'#FF4968', '#F59EC1' ];
+											return colorList[params.dataIndex]
+										}
+
+									}
+								},
+							} ]
+						});
+						sex_chart.hideLoading();
+					}
+					$(window).resize(function() {
+						sex_chart.resize();
+					});
+				});
+	}
+</script>
+</head>
+<body style="overflow: hidden;">
+	<div id="toolbar" class="ui-toolbar">
+		<span class="btn_bak" onclick="go_back();"></span>
+		<h1 class="toolbar_title">统计分析</h1>
+		<span class="btn_toolbar_font" id="btn_query" style="color: #ffffff;"><img
+			src="../../img/search_.png" style="position: relative; top: 8px;"
+			width="25px" height="25px"></span>
+	</div>
+
+	<div class="c_tabs div_other_40" id="div_tabs">
+		<div id='div_list0'>
+			<div class='c_tabs_text' onclick="gourl('ltzxx')">老同志信息</div>
+		</div>
+		<div id='div_list1'>
+			<div class='c_tabs_text' onclick="gourl('tj')">数据统计</div>
+		</div>
+		
+	</div>
+	<div id="sys_innerscoll">
+
+		<div  style='font-size: 15px;'>
+			<div style="padding: 10px 10px 0px 10px;">
+				|&nbsp;部机关<span id="ltzsum" ></span>位老同志。
+			</div>
+			<div style="padding: 10px 10px 0px 10px;">
+				|&nbsp;离休干部平均年龄<span id="lxage"></span>岁，退休干部平均年龄<span id="txage"></span>岁。
+			</div>
+
+			<hr style="height: 1px; border: none; border-top: 1px solid #e3e2e2;" />
+			<div style="padding: 10px 10px 0px 10px;">
+				|&nbsp;退（离）休：离休<span id="lixiu" ></span>人（<span id="lixiup" ></span>），退休<span id="tuixiu" ></span>人（<span id="tuixiup" ></span>）；
+			</div>
+			<div style="width: 100%; height: 130px;">
+				<div id="retire_chart" style="width: 100%; height: 100%;"></div>
+			</div>
+			<hr style="height: 1px; border: none; border-top: 1px solid #e3e2e2;" />
+			<div style="padding: 10px 10px 0px 10px;">
+				|&nbsp;性别：男<span id="boy" ></span>人（<span id="boyp" ></span>），女<span id="girl" ></span>人（<span id="girlp" ></span>）；
+			</div>
+			<div style="width: 100%; height: 130px;">
+				<div id="sex_chart" style="width: 100%; height: 100%;"></div>
+			</div>
+			<hr style="height: 1px; border: none; border-top: 1px solid #e3e2e2;" />
+			<div style="padding: 10px 10px 0px 10px;">
+				|&nbsp;现享受待遇：部级<span id="buji" ></span>人（<span id="bujip" ></span>），局级<span id="juji" ></span>人（<span id="jujip" ></span>），二级巡视员职级<span id="ejxsyzhiji" ></span>人（<span id="ejxsyzhijip" ></span>），处级及以下<span id="chuji" ></span>人（<span id="chujip" ></span>）；
+			</div>
+			<div style="width: 100%; height: 130px;">
+				<div id="level_chart" style="width: 100%; height: 100%;"></div>
+			</div>
+			<hr style="height: 1px; border: none; border-top: 1px solid #e3e2e2;" />
+			<div style="padding: 10px 10px 0px 10px;">
+				|&nbsp;民族：汉族<span id="hanzu" ></span>人（<span id="hanzup" ></span>），少数民族<span id="shaoshu" ></span>人（<span id="shaoshup" ></span>）；
+			</div>
+			<div style="width: 100%; height: 130px;">
+				<div id="nation_chart" style="width: 100%; height: 100%;"></div>
+			</div>
+			<hr style="height: 1px; border: none; border-top: 1px solid #e3e2e2;" />
+			<div style="padding: 10px 10px 0px 10px;">
+				|&nbsp;政治面貌：党员<span id="dangyuan" ></span>人（<span id="dangyuanp" ></span>）；非党员<span id="feidangyuan" ></span>人（<span id="feidangyuanp" ></span>）；
+			</div>
+			<div style="width: 100%; height: 130px;">
+				<div id="party_chart" style="width: 100%; height: 100%;"></div>
+			</div>
+			<hr style="height: 1px; border: none; border-top: 1px solid #e3e2e2;" />
+			<div style="padding: 10px 10px 0px 10px;">
+				|&nbsp;年龄：百岁以上<span id="hundred" ></span>人（<span id="hundredp" ></span>），90至99岁<span id="ninety" ></span>人（<span id="ninetyp" ></span>），80至89岁<span id="eighty" ></span>人（<span id="eightyp" ></span>），70至79岁<span id="seventy" ></span>人（<span id="seventyp" ></span>），70岁（不含）以下 <span id="sixty" ></span>人（<span id="sixtyp" ></span>）。
+			</div>
+			<div style="width: 100%; height: 180px;">
+				<div id="age_chart" style="width: 100%; height: 100%;"></div>
+			</div>
+			<hr style="height: 1px; border: none; border-top: 1px solid #e3e2e2;" />
+			<div style="padding: 10px 10px 0px 10px;">
+			    |&nbsp;2018年退休19人，去世11人（离休干部7人）。
+			    <br>&nbsp;2019年退休14人，去世11人（离休干部6人）。
+				<br>&nbsp;2020年退休7人，去世1人（离休干部0人）。
+				<br>&nbsp;<span id="last_last_year"></span>年退休<span id="last_last_addtx"></span>人，去世<span id="last_last_dietx"></span>人（离休干部<span
+					id="last_last_dielx"></span>人）。
+				<br>&nbsp;&nbsp;<span id="last_year"></span>年退休<span id="last_addtx"></span>人，去世<span id="last_dietx"></span>人（离休干部<span
+				id="last_dielx"></span>人）。
+				<br>&nbsp;&nbsp;<span id="now_year"></span>年退休<span id="addtx"></span>人，去世<span id="dietx"></span>人（离休干部<span
+				id="dielx"></span>人）。
+			</div>
+			<div style="height:200px;padding: 10px;"></div>
+		</div>
+</div>
+
+	
+	<div id="dialog_query">
+		<div>年龄段：</div>
+		<input type="text" id="age1" placeholder="起" /><input type="text" id="age2" placeholder="止" />
+		<div>退（离）休：</div>
+		<input type="radio" name="retired_type" value="0" style="width: 10px">退休
+		<input type="radio" name="retired_type" value="1" style="width: 10px">离休
+		<div>职级：</div>
+		<input type="radio" name="retired_post" value="01" style="width: 10px">部级
+		<input type="radio" name="retired_post" value="03" style="width: 10px">局级
+		<input type="radio" name="retired_post" value="05" style="width: 10px">处级及以下
+		<div>民族：</div>
+		<input type="radio" name="mz" value="01" style="width: 10px">汉族
+		<input type="radio" name="mz" value="02" style="width: 10px">少数民族
+	</div>
+	
+</body>
+</html>
+
+
+
+
+
+

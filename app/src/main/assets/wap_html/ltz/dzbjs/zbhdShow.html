@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+  <head>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+    <title>详情</title>
+    <link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/base.css" />
+    <link type="text/css" rel="stylesheet" href="../../css/iconfont/iconfont.css" />
+    <script type="text/javascript" src="../../gmu/js/gmu.js"></script> 
+	<script type="text/javascript" src="../../js/ict.js"></script>
+    <script type="text/javascript" src="../../js/local.js"></script>
+    <script type="text/javascript">
+        sys_addMeun = false;
+		var guid = getQueryStringRegExp("guid");
+		var src = getQueryStringRegExp("src");
+		var lb_dm = getQueryStringRegExp("lb_dm");
+		var nm = getQueryStringRegExp("nm");
+		var dm = getQueryStringRegExp("dm"); // 列表类型，所有页面都使用一个列表页
+		var slideIndex = getQueryStringRegExp("slideIndex");
+	     var clientWidth=window.innerWidth;
+		$(function(){
+			//生成toolbar
+		  	$('#toolbar2').toolbar();
+		  	
+			sys_ajaxGet("/ltz/zbhd/default.do?method=show",{guid:guid},function(json){
+	        	bind(json);  	
+	        	if(json.formData.nr && json.formData.nr.length>0){
+	        		var nr = replaceImgPath(json.formData.nr);
+	        		$("#nr").html(nr);
+	        	}
+	        	if(json.formData){
+		        	var fjhtml = getFj(json.formData);
+		        	//$("#_fujian").html(fjhtml);
+		        	if(fjhtml==""){
+		        	  $(".c_fujian").hide();
+		        	}else{
+		        	  $("#_fujian").html(fjhtml);
+		        	  $(".c_fujian").show();
+		        	} 		        	  
+	        	}
+	        
+	        	var imgs=document.getElementsByTagName("img");
+		        if(imgs.length>0){
+		        	var imgArr = [];
+					for (var i = 0; i < imgs.length; i++) {
+					    imgArr.push(imgs[i].src);
+					}
+					var imageArr = [];
+					var n = 0;
+					for (var j = 0; j < imgArr.length; j++) {
+					    imageArr.push(new Image());
+					    imageArr[j].src = imgArr[j];
+					    imageArr[j].onload  = function(){
+							n++; //每加载完成一张图片就累加1
+							if (n == imageArr.length) {//全部图片加载完成
+							  showImg();
+					        	//设置内容内滚动
+					        	var _height = getListHeight();//alert(window.innerHeight-_height);
+					        	$("#sys_innerscoll").height(window.innerHeight-_height);
+					        	var innerscroll = new iScroll("sys_innerscoll",{click:true});
+							}
+					  	};
+					}
+		        }else{
+		        	var _height = getListHeight();
+		        	$("#sys_innerscoll").height(window.innerHeight-_height);
+		        	var innerscroll = new iScroll("sys_innerscoll",{click:true});
+		        }
+		          var title_mc="详情";
+			      //$(".toolbar_title").text(json.lbmc); 
+			      
+			     LoadMsgList(guid);  
+	        });
+	        
+	     
+		});
+		function LoadMsgList(ywid){
+		   	     sys_ajaxGet('/msg/default.do?method=msgList',{ywid:ywid},function(json){
+						//bind(json);	
+						 var msgList = json.msgList;
+					     if(msgList.length>0){
+					       bindSsp(msgList);
+					     }
+					     //else{
+					      // $('#table_list').html('<div style="font-size: 16px;background: white;height: 80px;display: -webkit-box;-webkit-box-pack: center;-webkit-box-align: center">没有数据！</div>');
+					     //} 	
+						//var _height = window.innerHeight-105;	
+						//$("#innerscroller").height(_height);  
+				    	//var innerscroll = new iScroll("innerscroller",{hScrollbar:false, vScrollbar:false,click:true});	
+			    	 	
+				});
+		} 
+		  function bindSsp(list){			 
+					if(list.length>0){					  
+						  var sspHtml="";
+						  for(var i=0;i<list.length;i++){											  
+					         sspHtml+="<div class='list_row'>";				
+		                         sspHtml+="<div class='list_row_1'>"+list[i].msgnr+"</div>";   
+		                         sspHtml+="<div class='list_row_2'>"+list[i].lyr+"</div>";					      
+					         sspHtml+="</div>";						  
+						  }
+						   $('#msgList').html("");
+						   $('#msgList').html(sspHtml);
+					}	
+			}
+		function go_back(){
+			//if(src == "list"){
+  			//	sys_goURL("list.html?lb_dm="+lb_dm+ "&nm=" + nm+ "&dm=" + dm+"&slideIndex="+slideIndex);
+  			//}
+  			sys_goURL("zbhd.html?lb_dm="+lb_dm);
+   		}
+		function showImg(){            
+		       var imgs = document.getElementsByTagName("img");
+
+					for(var i=0; i<imgs.length; i++)
+					{
+					  var img = imgs[i];
+					  if(img.width>clientWidth){
+						  //img.width=w;
+						  img.style.width="100%";
+						  img.src=img.src+"?size=600*";
+					  }
+					   //img.style.width="90%";
+					   //img.style.height="90%";
+					   
+					}
+           }
+    </script>
+
+    <style type="text/css">
+    	.c_item_value{
+			padding-top: 15px;
+			font-size:.8em;
+		}
+	    .c_item_container{
+			min-height: 46px;
+			border-bottom: 1px solid #DDD;
+			
+		}
+		
+		.ui-toolbar-wrap{
+    		//background-color: #FFB73E;
+    		border: none !important;
+    	}
+    	 
+    </style>
+  </head>
+  <body>
+    <div id="toolbar2">
+	    <span class="btn_bak"  onclick="go_back();"></span>
+	    <h1 class="toolbar_title">详情</h1>
+	</div>
+
+	<div id="sys_innerscoll">
+		<div style="margin:0px 8px;">
+			<div style="width:100%;font-size:18px;font-weight:bold;margin-top:15px;text-align:center;text-overflow:ellipsis;-o-text-overflow:ellipsis;overflow:hidden;" id="zt"></div>
+			<div style="width:100%;font-size:12px;color:#BFBFBF;margin-top:15px;padding-left:10px;text-align:left;text-overflow:ellipsis;overflow:hidden;"><span id="fbr"></span>&nbsp;&nbsp;&nbsp;<span id="cjsj"></span></div>
+			<div><hr style="width:96%;"/></div>
+			<div class="c_item_value2" id="nr"></div>
+			<div style="height:25px;"></div>
+			<div class="c_item_container c_fujian"><div class="c_item_value" style="font-weight:bold;font-size:.7em;color:#666;"><br>相关附件：</div></div>
+			<div class="c_item_container"><div class="c_item_value" id="_fujian"></div></div>
+			<div style="height:25px;"></div>
+			<div id="msgList">
+			   
+			</div>
+		</div>
+	</div>	
+  </body>
+</html>

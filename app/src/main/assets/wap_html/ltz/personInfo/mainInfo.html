@@ -1,0 +1,422 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+<title>人员信息</title>
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<script type="text/javascript">
+	var zyxxid = getQueryStringRegExp("ryid");
+	var zyxxid1 = getQueryStringRegExp("zyxxid");
+	var innerscroll = null;
+
+	$(function() {
+	if(!zyxxid){
+	   zyxxid=zyxxid1;
+	 }
+		$('#toolbar').toolbar();
+		innerscoll();
+		showItem('zyxx');
+		getJbxx();
+		getJtxx();
+
+		$("#btn_bak").click(function() {
+			sys_goURL("zbList.html");
+		});
+	});
+
+	function showItem(param) {
+		if (param != 'zyxx') {
+			sys_goURL("showxx.html?pparam=" + param + "&qbxxid=" + zyxxid);
+		}
+	}
+	function getJbxx() {
+		sys_ajaxGet("/ltz/wapPerson/default.do?method=showMain&yh_id=" + zyxxid, function(json) {
+			bind(json);
+			innerscroll.refresh();
+		});
+
+	}
+	function getJtxx() {
+		sys_ajaxGet("/ltz/wapPerson/default.do?method=childrenList&yh_id=" + zyxxid, function(json) {
+			var chileList = json.gridData.table_list.data;
+			if (chileList.length > 0) {
+				var childrenHtml = "";
+				for (var i = 0; i < chileList.length; i++) {
+					var childenBirthday = (chileList[i].children_birthday == undefined) ? '' : chileList[i].children_birthday;
+					var situation = (chileList[i].situation == undefined) ? '' : chileList[i].situation;
+
+					var chilrHtml = "<div class='divZnxx' style='display:none;'><div class='form_cell_label'>[" + (i + 1) + "]姓名：</div><div class='form_cell_item'><div name='children_xm'>" + chileList[i].children_xm
+						+ "</div></div></div><div class='divZnxx' style='display:none;'><div class='form_cell_label'>性别：</div><div class='form_cell_item'><div name='children_sex'>" + chileList[i].children_sex
+						+ "</div></div></div><div class='divZnxx' style='display:none;'><div class='form_cell_label'>出生日期：</div><div class='form_cell_item'><div name='children_birthday'>" + childenBirthday
+						+ "</div></div></div><div class='divZnxx' style='display:none;'><div class='form_cell_label'>是否同住：</div><div class='form_cell_item'><div name='cohabit'>" + chileList[i].cohabit
+						+ "</div></div></div><div class='divZnxx' style='display:none;'><div class='form_cell_label'>目前状况：</div><div class='form_cell_item'><div name='situation'>" + situation
+						//+ "</div></div></div><div><div class='form_cell_label'>联系电话：</div><div class='form_cell_item'><div name='children_phone'>" + chileList[i].children_phone
+						+ "</div></div></div><div class='divZnxx' style='display:none;'><div class='form_cell_label'>工作单位及职务：</div><div class='form_cell_item'><div name='children_phone'>" + chileList[i].children_post
+						+ "</div></div></div>"
+					childrenHtml += chilrHtml;
+				}
+				$("#znxx").after(childrenHtml);
+				innerscroll.refresh();
+			}
+		});
+	}
+	function innerscoll() {
+		var _height = getListHeight();
+		$("#sys_innerscoll").height(window.innerHeight - _height - 40);
+		innerscroll = new iScroll("sys_innerscoll", {
+			click : true
+		});
+	}
+	function showxx(id,obj) { //获取下级部门用户
+		var divzt = $(obj).attr('class');
+		if (divzt == 'open') {
+			$('.'+id).hide();
+			$(".img", obj).attr("src", "img/open.png");
+			$(obj).attr("class", "close");
+		} else {
+			$('.'+id).show();
+			$(".img", obj).attr("src", "img/close.png");
+			$(obj).attr("class", "open");
+		}
+		innerscroll.refresh();
+	}
+</script>
+<style type="text/css">
+.ui-toolbar-wrap { //
+	background-color: #FFB73E;
+	border: none !important;
+}
+
+.c_tabs {
+	height: 40px;
+	width: 100%;
+	background-color: white !important;
+	display: -webkit-box;
+	border-bottom: #dddddd solid 1px
+}
+
+.c_tabs>div {
+	-webkit-box-flex: 1;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	font-size: 15px;
+	font-family: "微软雅黑";
+	display: none;
+	color: #4B5052;
+}
+
+.c_tabs_active {
+	color: #FF4854;
+	border-bottom: 2px solid #FF4854;
+	height: 38px !important;
+}
+
+.c_tabs_text {
+	display: inline-block;
+}
+
+.form_cell_label {
+	width: 145px;
+}
+
+.form_cell_item {
+	padding-left: 5px;
+}
+</style>
+</head>
+<body>
+	<div id="toolbar">
+		<span  class="btn_bak" onclick="sys_closeDetail();"></span>
+		<h1 class="toolbar_title">人员信息</h1>
+	</div>
+
+	<div class="c_tabs" id="div_tabs">
+		<div id="div_list_4" style="display: block;">
+			<div class="c_tab_text c_tabs_active" id="tab_zyxx"
+				onclick="showItem('zyxx')">主要信息</div>
+		</div>
+		<div id="div_list_0" style="display: block;">
+			<div class="c_tab_text " id="tab_qbxx" onclick="showItem('qbxx')">全部信息</div>
+		</div>
+	</div>
+
+	<div id="sys_innerscoll">
+		<div>
+			<form id="frm1">
+				<input type="hidden" name="guid" id="guid" />
+				<div class="c_form_show">
+					<div class="open"
+						style="display: -webkit-box;height:50px;width:100%;border-bottom:1px solid #e7e7e7;"
+						onclick="showxx('divJbxx',this)">
+						<div class="list_row_col1"
+							style="line-height: 58px;width:8%;padding-left: 10px;">
+							<img class="img" src="img/close.png" style="">
+						</div>
+						<div class="list_row_col2">
+							<div class="list_row_col2_1" style="margin-top:15px;">
+								基本信息<br>
+							</div>
+						</div>
+					</div>
+
+					<div class="divJbxx">
+						<div class="form_cell_label" align="right;">姓名：</div>
+						<div class="form_cell_item">
+							<div id="xm"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">性别：</div>
+						<div class="form_cell_item">
+							<div id="sex"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">民族：</div>
+						<div class="form_cell_item">
+							<div id="mz"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">出生日期：</div>
+						<div class="form_cell_item">
+							<span id="birthday"></span>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">入党时间：</div>
+						<div class="form_cell_item">
+							<div id="rdsj"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">参加工作时间：</div>
+						<div class="form_cell_item">
+							<div id="rzsj"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">籍贯：</div>
+						<div class="form_cell_item">
+							<div id="jg"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">原工作单位及职务：</div>
+						<div class="form_cell_item">
+							<div id="post"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">退（离）休：</div>
+						<div class="form_cell_item">
+							<div id="retired_type"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">退（离）休时职级：</div>
+						<div class="form_cell_item">
+							<div id="retired_post"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">退（离）休时间：</div>
+						<div class="form_cell_item">
+							<div id="retired_date"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">现享受待遇：</div>
+						<div class="form_cell_item">
+							<div id="treatment"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">享受待遇批准时间：</div>
+						<div class="form_cell_item">
+							<div id="treatment_date"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">提高享受待遇情况：</div>
+						<div class="form_cell_item">
+							<div id="raise_treatment"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">所以在党支部：</div>
+						<div class="form_cell_item">
+							<div id="szdzb"></div>
+						</div>
+					</div>
+					<div class="divJbxx">
+						<div class="form_cell_label">党内职务：</div>
+						<div class="form_cell_item">
+							<div id="zbsj" style="float:left"></div>
+							<div id="zbfsj" style="float:left"></div>
+							<div id="zzwy" style="float:left"></div>
+							<div id="xcwy" style="float:left"></div>
+							<div id="jjwy" style="float:left"></div>
+						</div>
+					</div>
+					
+					<div  style="display: -webkit-box;height:50px;width:100%;border-bottom:1px solid #e7e7e7;"
+						onclick="showxx('divGzxx',this)">
+						<div class="list_row_col1"
+							style="line-height: 58px;width:8%;padding-left: 10px;">
+							<img class="img" src="img/open.png" style="">
+						</div>
+						<div class="list_row_col2">
+							<div class="list_row_col2_1" style="margin-top:15px;">
+								工作经历<br>
+							</div>
+						</div>
+					</div>
+					<div class="divGzxx" style="display:none;">
+						<div class="form_cell_item">
+							<div id="experience" style="width:98%;"></div>
+						</div>
+					</div>
+					
+					
+					<div  style="display: -webkit-box;height:50px;width:100%;border-bottom:1px solid #e7e7e7;"
+						onclick="showxx('divQtxx',this)">
+						<div class="list_row_col1"
+							style="line-height: 58px;width:8%;padding-left: 10px;">
+							<img class="img" src="img/open.png" style="">
+						</div>
+						<div class="list_row_col2">
+							<div class="list_row_col2_1" style="margin-top:15px;">
+								健康与家庭<br>
+							</div>
+						</div>
+					</div>
+					<div class="divQtxx" style="display:none;">
+						<div class="form_cell_label">疾病情况：</div>
+						<div class="form_cell_item">
+							<div id="disease"></div>
+						</div>
+					</div>
+					<div class="divQtxx" style="display:none;">
+						<div class="form_cell_label">活动能力：</div>
+						<div class="form_cell_item">
+							<div id="action"></div>
+						</div>
+					</div>
+					<div class="divQtxx" style="display:none;">
+						<div class="form_cell_label">家庭地址：</div>
+						<div class="form_cell_item">
+							<div id="home"></div>
+						</div>
+					</div>
+					<div class="divQtxx" style="display:none;">
+						<div class="form_cell_label">常住地址：</div>
+						<div class="form_cell_item">
+							<div id="address"></div>
+						</div>
+					</div>
+					<div class="divQtxx" style="display:none;">
+						<div class="form_cell_label">手机号码1：</div>
+						<div class="form_cell_item">
+							<div id="sj"></div>
+						</div>
+					</div>
+					<div class="divQtxx" style="display:none;">
+						<div class="form_cell_label">手机号码2：</div>
+						<div class="form_cell_item">
+							<div id="desj"></div>
+						</div>
+					</div>
+					<div class="divQtxx" style="display:none;">
+						<div class="form_cell_label">固定电话1：</div>
+						<div class="form_cell_item">
+							<div id="phone1"></div>
+						</div>
+					</div>
+					<div class="divQtxx" style="display:none;">
+						<div class="form_cell_label">固定电话2：</div>
+						<div class="form_cell_item">
+							<div id="phone2"></div>
+						</div>
+					</div>
+					<div class="divQtxx" style="display:none;">
+						<div class="form_cell_label">居住状态：</div>
+						<div class="form_cell_item">
+							<div id="live_show"></div>
+						</div>
+					</div>
+					
+					
+					<div  style="display: -webkit-box;height:50px;width:100%;border-bottom:1px solid #e7e7e7;"
+						onclick="showxx('divPoxx',this)">
+						<div class="list_row_col1"
+							style="line-height: 58px;width:8%;padding-left: 10px;">
+							<img class="img" src="img/open.png" style="">
+						</div>
+						<div class="list_row_col2">
+							<div class="list_row_col2_1" style="margin-top:15px;">
+								配偶信息<br>
+							</div>
+						</div>
+					</div>
+					<div class="divPoxx" style="display:none;">
+						<div class="form_cell_label">姓名：</div>
+						<div class="form_cell_item">
+							<div id="po_xm"></div>
+						</div>
+					</div>
+					<div class="divPoxx" style="display:none;">
+						<div class="form_cell_label">性别：</div>
+						<div class="form_cell_item">
+							<div id="po_sex_show"></div>
+						</div>
+					</div>
+					<div class="divPoxx" style="display:none;">
+						<div class="form_cell_label">目前状况：</div>
+						<div class="form_cell_item">
+							<div id="po_present_show"></div>
+						</div>
+					</div>
+					<div class="divPoxx" style="display:none;">
+						<div class="form_cell_label">工作单位及职务：</div>
+						<div class="form_cell_item">
+							<div id="po_post"></div>
+						</div>
+					</div>
+					<div class="divPoxx" style="display:none;">
+						<div class="form_cell_label">联系电话：</div>
+						<div class="form_cell_item">
+							<div id="po_phone"></div>
+						</div>
+					</div>
+					<div class="divPoxx" style="display:none;">
+						<div class="form_cell_label">出生日期：</div>
+						<div class="form_cell_item">
+							<div id="po_birthday"></div>
+						</div>
+					</div>
+					<div  style="display: -webkit-box;height:50px;width:100%;border-bottom:1px solid #e7e7e7;"
+						onclick="showxx('divZnxx',this)" id="znxx">
+						<div class="list_row_col1"
+							style="line-height: 58px;width:8%;padding-left: 10px;">
+							<img class="img" src="img/open.png" style="">
+						</div>
+						<div class="list_row_col2" >
+							<div class="list_row_col2_1" style="margin-top:15px;">
+								子女信息<br>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

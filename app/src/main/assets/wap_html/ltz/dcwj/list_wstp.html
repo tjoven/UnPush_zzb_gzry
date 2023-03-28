@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+<title>调查问卷</title>
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+<link rel="stylesheet" type="text/css" href="../../css/list.css" />
+<link type="text/css" rel="stylesheet" href="../../css/iconfont/iconfont.css" />
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<script type="text/javascript" src="../../js/list.js"></script>
+<script type="text/javascript" src="../../js/touchslider.dev.js"></script>
+<script type="text/javascript">
+
+	sys_addMeun = true;
+	var _list = {};
+	var nm = getQueryStringRegExp("nm");
+	$(function() {
+	if(nm == ''){			    	
+			nm=1;
+		}
+	$(".c_tabs_text").eq(1).addClass("c_tabs_active");
+		$('#toolbar').toolbar();
+		$("#cx_zt").width($(document).width()-20);
+		$("#cx_zt").val("");
+		sys_renderList('table_list',"/djypt/dcwj/default.do?method=list&showcount=showcount&page_size=20",{},_list);
+		$("#div_wjdc").addClass("table_tabs_active");
+	});
+	 
+	function callback_trclick_table_list(param) {
+		 sys_goURL("wstp.html?guid=" + param  );
+	}
+  
+	function search() {
+		cx_zt = $("#cx_zt").val();
+		sys_ajaxGet("/djypt/dcwj/default.do?method=list&showcount=showcount&page_size=10&page_goto=", {
+			cx_zt : cx_zt
+		}, function(json) {
+			bind(json, 'up');
+			_list["table_list"].refresh();
+			_list['table_list'].scrollTo(0, 0, 500, false);
+		});
+	}
+
+	function go_back() {
+		sys_goURL("activity/sxglMain.html");
+	}
+	
+    function gourl(param){
+    	if(param=="wjdc"){
+    		sys_goURL("list_wstp.html");  	
+    	}else if(param=="hdbm"){
+    		sys_goURL("activity/list.html?lb_dm=8103&nm=0");
+    	}else if(param=="cgjgl"){
+    		sys_goURL("../demandAndSurvey/demandAndHandle/cgjgl.html?nm=2");
+    	}
+	}
+</script>
+
+<style type="text/css">
+   .ui-toolbar-wrap{
+	    		border: none !important;
+    		}
+   
+  
+/*列表条搜索*/
+ .list_div_search{
+	background-color: #e5e5e5;
+	width: 100%;
+	height: 50px;
+ }
+ .list_search_input{
+  width:100%;
+  height:30px;
+  margin:10px 10px 10px 7px;
+  padding-left:6px;
+  border-radius:4px;
+  font-family: Microsoft YaHei;
+}
+ .list_search_img {
+	width: 35px;
+	height: 35px;
+	background: url("../../img/search.png") no-repeat;
+	background-size: 28px 28px;
+	border: 0px !important;
+	position: absolute;
+	margin-left: 86%;
+	margin-top: -38px;
+}
+
+.table_tabs {
+	width:100%;
+	background-color: white !important;
+	border-bottom: #dddddd solid 1px
+}
+
+.table_tabs td {
+	-webkit-box-flex: 1;
+	height: 39px;
+	line-height: 39px;
+	text-align: center;
+ 
+}
+
+.table_tabs_text {
+ font-size: 16px;
+	padding-bottom:9px;
+	display:inline;
+	color: #4B5052;
+}
+.table_tabs_active {
+color: #FF4854;
+	border-bottom: 2px solid #FF4854;
+}
+
+</style>
+
+</head>
+<body>
+	<div id="toolbar">
+		  <span class="btn_bak"  onclick="go_back();"></span>
+		<h1 class="toolbar_title">问卷调查</h1>
+	
+	</div>
+
+	<!--<div class="c_tabs div_other_40" id="div_tabs">
+		<div id='div_list0'>
+			<div class='c_tabs_text' onclick="gourl('hdbm')">活动报名</div>
+		</div>
+		<div id='div_list1'>
+			<div class='c_tabs_text' onclick="gourl('wjdc')">问卷调查</div>
+		</div>
+		<div id='div_list2'>
+			<div class='c_tabs_text' onclick="gourl('cgjgl')">出国（境）</div>
+		</div>
+	</div>-->
+
+	<div class="ui-refresh" id="div_table_list">
+
+<!-- 		<div id="div_search" class="list_div_search">			 -->
+<!-- 			<input type="text" id="cx_zt" class="list_search_input" placeholder="请输入问卷标题" >		 -->
+<!-- 			<div class="list_search_img" id="btn_search" onclick="search()"></div>			 -->
+<!-- 		</div> -->
+		
+		<!--<div class="ui-refresh-up" id="ui-refresh-up"></div>-->
+		<ul class="data-list" id="table_list" style="list-style-type:none">
+			<li style="display: none;" >
+				<div style="display: none;">{guid}</div>
+				
+				<!-- 点击行的参数 -->
+				<div class="list_row_con" style="height:70px;min-height:70px;background-color: #ffffff;" >
+<!-- 				    <div class="list_row_slt" style="margin-top:2px;margin-left: 3px;"> -->
+<!-- 				       <img src="{slt}" style="height: 65px;width:90px"/> -->
+<!-- 				    </div> -->
+					<div class="list_row_col2" style="margin-top:8px;margin-left:18px;">
+						<div class="list_row_col2_1 overflow">{wjmc}</div>
+						<div class="list_row_col2_2"
+							style="top:4px;clear:none;width: 100%;float: left;">
+							<span style="right: 5px;float: left;">{showcount}人参与</span>
+							 <span style="float: right;">{jssj}</span>
+<!-- 							 <span style="float: right;">{tpkssj}</span> -->
+						</div>
+					</div>
+					<div class="list_row_col3" style="background:none;"></div>
+				</div>
+			</li>
+		</ul>
+		<div class="ui-refresh-down"></div>
+	</div>
+	<!-- <div id="dialog_search">
+        <p>名称：<input type="text" id="input_cxmc" value="" placeholder="名称"/></p>
+    </div> -->
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+<title></title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0,maximum-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+<link rel="stylesheet" type="text/css" href="../../css/list.css" />
+<link rel="stylesheet" type="text/css" href="../../pub.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/mobiscoller.css" />
+<link rel="stylesheet" type="text/css" href="../../main.css" />
+<link rel="stylesheet" type="text/css" href="../zhfw/zhfw.css" />
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<script type="text/javascript" src="../../js/list.js"></script>
+<script type="text/javascript" src="../../js/touchslider.dev.js"></script>
+	<script type="text/javascript" src="../../js/Mdate/Mdate.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../js/Mdate/mdate.css" />
+<link href="../../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">  
+<script type="text/javascript">
+	var innerscroll = null;
+	var _list ={};
+    var date=new Date;
+    var year=date.getFullYear();
+	$(function() {
+        new Mdate("year", {
+            beginYear : "2010",
+            beginMonth : "1",
+            format : "yyyy"
+        })
+		$('#toolbar').toolbar();
+		//调整搜索框宽度
+		// $("#cx_xm").width($(document).width()-20);
+		sys_renderList('table_list', "/ltz/jkxy/jkxy/default.do?method=list&page_size=10&page_goto=", {year:year-1}, _list);
+        $("#year").focus(function() {
+            document.activeElement.blur();
+        });
+	});	
+	 
+	
+	function back(){
+		sys_goURL("main.html?nm=1");
+	}
+    function callback_trclick_table_list(param) {
+        sys_goURL("restHistory.html?ltzid=" + param);
+
+    }
+	
+	function search(){
+		var xm = $("#cx_xm").val();
+		var year = $("#year").val();
+		if (year.length!=0){
+		    if (year.length!=4) {
+                sys_alert("请输入正确的年份。例如：1990");
+                return;
+            }
+		}
+		sys_ajaxGet("/ltz/jkxy/jkxy/default.do?method=list&cx_xm="+xm+"&year="+year+"&page_size=10&page_goto=",function(json){
+			bind(json,'up');
+			_list["table_list"].refresh();
+			_list['table_list'].scrollTo(0,0,500,false); 
+		});
+	}
+    function searchJn() {
+        sys_ajaxGet("/ltz/jkxy/jkxy/default.do?method=list&year=" + year + "&page_size=10&page_goto=", function (json) {
+            bind(json, 'up');
+            _list["table_list"].refresh();
+            _list['table_list'].scrollTo(0, 0, 500, false);
+        });
+    }
+
+</script>
+	<style>
+		#yearwrapper ul {
+			margin-left: 0;
+			width: 100%;
+		}
+		#yearwrapper ul li {
+			font-size: 14px;
+		}
+
+		#yearwrapper {
+			width: 100%;
+		}
+
+		#daywrapper {
+			display: none;
+		}
+
+		#monthwrapper {
+			display: none;
+		}
+		#getDateBox button{
+			font-size: 20px;
+		}
+	</style>
+<title>健康休养</title>
+</head>
+<body style="background-color:#ffffff;">
+	<div id="toolbar" >
+	    <span id="btn_bak" class="btn_bak" onclick="back();" ></span>
+		<h1 class="toolbar_title" >休养记录</h1>
+		<div class="ui-toolbar-right" style="border: none;width: 70px;">
+			<span style="font-size: 19px;vertical-align:  middle;padding-top: 15px;color: white;" onclick="searchJn()">本年度</span>
+		</div>
+	</div>
+	<div id="div_search" class="list_div_search div_other_50">			
+		<span style="display: inline-block; position: relative;width: 45%">
+			<input type="text" id="cx_xm" class="form-control list_search_input" style="width: 80% !important;" placeholder="输入姓名查询" >
+		</span>
+		<span style="display: inline-block; position: absolute;width: 50%;">
+			<input type="text" id="year" class="list_search_input" style="width: 80% !important;" placeholder="输入年度查询" >
+			<div class="list_search_img" id="btn_search" onclick="search()" style="margin-left: 85%;"></div>
+		</span>
+	</div>	
+	 <div class="ui-refresh" id="div_table_list">
+		<!--<div class="ui-refresh-up" id="ui-refresh-up"></div>-->
+		<ul class="data-list" id="table_list" style="list-style-type:none">
+			<li style="display: none;" >
+				 <div style="display: none;">{ltzid}</div>
+				
+				<!-- 点击行的参数 -->
+				<div class="list_row_con" style="min-height:65px;background-color: #ffffff;" >
+				   
+					<div class="list_row_col1" style="width:15px;"></div>
+					<div class="list_row_col2" style="width:100%;">
+					   <div class="list_row_col2_1 overflow" style="margin-top: 18px;">
+					   		<div style="width:25%;display:inline-block;">{xm}</div>
+					   		<div style="width:20%;display:inline-block;text-align: right;">{age}岁</div>
+					   		<div style="width:25%;display:inline-block;text-align: right;">{tlx}</div>					   		
+					   		<div style="width:25%;display:inline-block;text-align: right;">{zj}</div>					   							   		
+					   </div>
+					   <div class="list_row_col2_2 overflow" style="top:10px;">
+					   		<div style="width:33%;display:inline-block;">{xysjq}</div>
+					   		<div style="width:31%;display:inline-block;text-align: center;">{xydd}</div>					   		
+					   		<div style="width:33%;display:inline-block;text-align: right;">{peiou}（带配偶）</div>					   
+					   </div>	
+					</div>
+					<div class="list_row_col3" style="width:25px;margin-right: 10px;"></div>
+				</div>
+			</li>
+		</ul>
+		<div class="ui-refresh-down"></div>
+	</div>
+</body>
+</html>

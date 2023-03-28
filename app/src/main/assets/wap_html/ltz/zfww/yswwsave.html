@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1">
+<title>走访慰问</title>
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+<link rel="stylesheet" type="text/css" href="../../css/mobiscoller.css" />
+
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<script type="text/javascript" src="../../js/validate.js"></script>
+<script type="text/javascript" src="../../js/mobiscroll.js"></script>
+
+<script type="text/javascript">
+	  
+	var innerscroll = null;
+	var guid = getQueryStringRegExp("guid");
+	var from = getQueryStringRegExp("from");
+	var ltzid = getQueryStringRegExp("ltzid");
+	$(function() {
+		$('#toolbar').toolbar();
+		setCurrentDate("#zfsj");
+		if(ltzid!=null&&""!=ltzid){
+			sys_ajaxGet("/ltz/zfww/default.do?method=yswwltzshow&ltzid=" + ltzid, function(json) {
+				bind(json);
+			});
+		}
+		if(guid&&guid!=null&&""!=guid){
+			$("#xm").attr("readonly","true").removeAttr("onclick");
+		 	sys_ajaxGet("/ltz/zfww/default.do?method=yswwshow&guid=" + guid, function(json) {
+				bind(json);
+			});
+		}
+		var _height = getListHeight();
+		$("#sys_innerscoll").height(window.innerHeight - _height);
+		innerscroll = new iScroll("sys_innerscoll", {
+			click : true
+		});
+		sys_autoTextarea(innerscroll);
+
+	});
+	
+	function setCurrentDate(elementID){
+		if(!$(elementID)){
+			return ;
+		}
+    	var myDate = new Date();
+		var mon = myDate.getMonth()+1;
+		var day = myDate.getFullYear()+"-"+mon+"-"+myDate.getDate();
+		$(elementID).val(day);
+		$(elementID).scroller({
+            preset: 'date',//日期 date 时间 time  时间日期datetime
+          	lang: 'zh',
+    		theme:'ios',
+    		display:'inline'
+         });
+    }
+
+	function save() {
+		if(guid && guid!=null && ""!=guid){
+			 
+		 }else{
+			 if(!$("#ltzid").val()||$("#ltzid").val()==""){
+					alert("请选择老同志");
+					return ;
+				}
+		 }
+		if (!Validate.CheckForm($("#frm1")[0])) {
+			return;
+		}
+		var queryString = $("#frm1").serialize();
+		sys_ajaxPost("/ltz/zfww/default.do?method=yswwsave&zflx=ysww", queryString, function(data) {
+			if (data.result == true) {
+				sys_alert("提交成功");
+				setTimeout(function() {
+					sys_goURL("ysww.html?guid="+guid );
+				}, 1000);
+			} else {
+				sys_alert_xgmm(data.msg);
+			}
+		});
+	}
+
+	function back() {
+		sys_goURL("ysww.html?guid="+guid);
+	}
+	
+	function sys_txlcx(sys_fsfw, sys_fsfw_mc) { 
+		sys_goURL("yswwryxz.html");
+		return;
+	}
+	
+</script>
+<style type="text/css">
+ textarea{
+ 	padding-top: 10px; 
+ 	height:80px;
+ 	min-height:80px;
+ }
+ .ui-toolbar-wrap{
+ 	border:0px;
+ }
+ .form_cell_label{
+	color:#000000;
+	width: 120px;
+	font-size: 17px;
+}
+
+ .form_cell_item input, textarea {
+    font-size: 17px;
+        color: #5c5959;
+}
+
+ .c_form_show>div {
+    min-height: 55px;
+}
+</style>
+</head>
+<body>
+	<div id="toolbar">
+		<span id="btn_bak" class="btn_bak" onclick="back();"></span>
+		<h1 class="toolbar_title">遗属慰问</h1>
+		<span class="btn_toolbar_font" style="color:#ffffff;" onclick="save()">保存</span>
+	</div>
+	<div id="sys_innerscoll">
+		<form id="frm1">
+			<input type="hidden" name="guid" id="guid" /> 
+ 			<div class="c_form_show" >
+				<div style="margin-top:10px;">
+					<div class="form_cell_label" ><span style="color:red">*&nbsp;</span>老同志</div>
+					<div class="form_cell_item">
+						<input  onclick="sys_txlcx('ltzid','xm');" type="text" class="form-control" name="xm" id="xm" value="" readonly="readonly" placeholder="请选择">
+						<input type="hidden" name="ltzid" id="ltzid" value="" />
+					</div>
+					<div class="form_cell_jiantou"></div>
+				</div>
+				<div>
+					<div class="form_cell_label" >&nbsp;&nbsp;&nbsp;遗属姓名</div>
+					<div class="form_cell_item">
+						<input type="text" class="form-control" name="po_xm" id="po_xm" readonly="readonly">
+					</div>
+				</div>
+				<div>
+					<div class="form_cell_label" >&nbsp;&nbsp;&nbsp;性别</div>
+					<div class="form_cell_item">
+						<input type="text" class="form-control" name="po_sex" id="po_sex"readonly="readonly">
+					</div>
+				</div>
+				<div>
+					<div class="form_cell_label" >&nbsp;&nbsp;&nbsp;出生日期</div>
+					<div class="form_cell_item">
+						<input type="text" class="form-control" name="po_birthday" id="po_birthday" readonly="readonly">
+					</div>
+				</div>
+				<div>
+					<div class="form_cell_label" >&nbsp;&nbsp;&nbsp;家庭住址</div>
+					<div class="form_cell_item">
+						<input type="text" class="form-control" name="home" id="home" readonly="readonly">
+					</div>
+				</div>
+				<div>
+					<div class="form_cell_label" >&nbsp;&nbsp;&nbsp;联系电话</div>
+					<div class="form_cell_item">
+						<input type="text" class="form-control" name="sj" id="sj" readonly="readonly">
+					</div>
+				</div>
+				<div>
+					<div class="form_cell_label" ><span style="color:red">*&nbsp;</span>工作人员</div>
+					<div class="form_cell_item">
+						<input type="text" class="form-control" name="zfld" id="zfld" required="true" value="五处同志" maxlength="50"  showName="慰问工作人员" >
+					</div>
+				</div>
+				<div >
+					<div class="form_cell_label" >&nbsp;&nbsp;&nbsp;慰问时间</div>
+					<div class="form_cell_item">
+						<input type="text" class="form-control" name="zfsj" id="zfsj"  >
+					</div>
+				</div>
+				<div>
+					<div class="form_cell_label" >&nbsp;&nbsp;&nbsp;慰问金</div>
+					<div class="form_cell_item">
+						<input type="text" class="form-control" name="wwj" id="wwj" value="1500元" >
+					</div>
+				</div>
+				<div>
+					<div class="form_cell_label" >&nbsp;&nbsp;&nbsp;反映问题</div>
+					<div class="form_cell_item">
+						<textarea  class="form-control" name="fywt" id="fywt" placeholder="请输入"></textarea>
+					</div>
+				</div>
+			 </div>
+		</form>
+	</div>
+	
+</body>
+</html>

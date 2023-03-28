@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+<title>遗属服务</title>
+<link rel="stylesheet" type="text/css" href="../../gmu/css/gmu.css" />
+<link rel="stylesheet" type="text/css" href="../../css/base.css" />
+<script type="text/javascript" src="../../gmu/js/gmu.js"></script>
+<script type="text/javascript" src="../../js/ict.js"></script>
+<script type="text/javascript" src="../../js/local.js"></script>
+<link href="../../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript">
+	var guid = null;
+	var _list = {};
+	var innerscroll = null;
+	$(function() {
+		$('#toolbar').toolbar();
+		guid = getQueryStringRegExp("guid");
+		 
+		sys_ajaxGet("/ltz/dieInfo/default.do?method=showdie&guid=" + guid, function(json) {
+			bind(json);
+		});
+		sys_ajaxGet("/ltz/homeInfo/default.do?method=wapShow&guid=" + guid, function(json) {
+			bind(json);
+		});
+		sys_renderList('table_list', "/ltz/homeInfo/default.do?method=childrenList&page_size=10&cx_yhid="+guid+"&page_goto=", {}, _list);								
+		//查询照片
+		sys_ajaxGet("/ltz/dailyManagement/getEntryAndExitInfo/default.do?method=getPic&server_url=" + getUrl()+"&guid="+guid,function(json){
+			var imgUrl = "avatar.png", imgAlt = "暂无图片";
+			if(json.result == true){
+				if(json.formData.wjlj!='') imgUrl = json.formData.imgurl;
+				imgAlt = json.formData.wjmc;
+			}
+			$('#imgPerson').attr({'src':imgUrl,'alt':imgAlt}); 
+		});
+		$("#btn_bak").click(function() {
+			sys_goURL("surviving.html?nm=0");
+		});		
+		var _height = getListHeight();
+		$("#sys_innerscoll").height(window.innerHeight - _height);
+		innerscroll = new iScroll("sys_innerscoll", {
+			click : true
+		});
+	});
+ 
+</script>
+<style type="text/css">
+.ui-toolbar-wrap{
+	border:0px;
+}
+.d_form_table{
+    margin-top:10px;
+}
+.d_form_table td{
+ 	height:34px;
+ 	text-align:left;
+ 	font-size:14px;
+ 	font-weight:normal;
+ }
+ .d_form_table td.d_form_info{
+ 	text-align:left;
+ }
+h4{
+    margin-top: 0px;
+    /* padding-top: 10px; */
+    padding-bottom: 10px;
+    color: #FF4854;
+    border-bottom: 1px dashed #FF4854;
+}
+.field{
+ 	border-bottom:5px solid #edf0f5;
+ 	padding:10px;
+ 	padding-bottom:0px;
+ }
+ .field .title{
+ 	border-bottom: 1px dashed #edf0f5;
+    padding-bottom: 10px;
+    font-weight:600;
+ }
+ .form_cell_item{
+   font-size:14px;
+   text-align:left;
+   font-weight:300;
+}
+.form_cell_palceholder{
+   font-size:14px;
+   text-align:left;
+}
+</style>
+</head>
+<body style="background-color: white!important;">
+	<div id="toolbar">
+		<span id="btn_bak" class="btn_bak"></span>
+		<h1 class="toolbar_title">遗属服务</h1>
+	</div>
+	<div id="sys_innerscoll">
+	<!-- 表单区域 -->
+		<div >
+		<!-- 基本信息table -->
+		<div class="field">
+			<div class="title">老同志信息</div>
+			<table width="100%" class="d_form_table">
+	            <tr>
+		            <!-- <td width="30%" rowspan="4" style="text-align:center;vertical-align:middle;line-height:100%;">
+		            	<div style="height:100px;margin:0 auto;padding-right:10px;">
+		            	<img src="" id="imgPerson" style="width:100%;height:100%"></div>
+		            </td> -->
+	            	<td width="30%" ><span id="xm" ></span> </td>	                
+					<td width="30%" ><span id="sex" ></span></td>	                
+	         	</tr>
+	         	<tr>
+	         	    <td ><span id="zj" ></span></td>						               
+	            	<td >享年<span id="age" ></span>岁</td>
+	            </tr>
+				<tr>	            	
+	            	<td colspan="2" ><span id="post" ></span></td>
+	         	</tr>
+	         	<tr>
+	            	 <td ><span id="retired_type" ></span></td>
+	            	 <td ><span id="dzb" ></span></td>      					 
+	         	</tr>
+	         </table>	
+		</div>
+		<div class="field">
+			<div class="title">离世信息</div>
+			<table width="100%"class="d_form_table">  	
+	         	<tr>
+	            	<td class="d_form_text" width ="40%">离世时间&nbsp;</td>
+	                <td class="d_form_info" width ="55%"> <span id="diedate" ></span></td>	            	
+	         	</tr>
+	         	<tr>
+	         		<td class="d_form_text">原因&nbsp;&nbsp;</td>
+	                <td class="d_form_info"><span  id="diereason" style="word-break: break-word;"></span></td>
+	         	</tr>	
+	         	<tr>
+	            	<td class="d_form_text" >送别方式</td>
+	                <td class="d_form_info"><span  id="farewell" style="word-break: break-word;"></span></td>	            	
+	         	</tr>
+	         	<tr>
+	         		<td class="d_form_text">送别时间</td>
+	                <td class="d_form_info"><span  id="farewell_date"></span></td>
+	         	</tr>
+	       	    <tr>
+	         	    <td class="d_form_text" >抚恤金等领取时间</td>
+	                <td class="d_form_info"><span id="consolation_date" ></span> </td>	              
+	         	</tr>
+	         	<tr>
+	            	<td class="d_form_text" >领取人</td>
+	                <td ><span  id="consolation_per" style="word-break: break-word;"></span></td>	            	
+	         	</tr>
+	         	<tr>
+	         		<td class="d_form_text">抚恤金等未领取原因</td>
+	                <td class="d_form_info"><span   id="no_consolationdate" style="word-break: break-word;" ></span></td>
+	         	</tr>
+	       	    <tr>
+	         	    <td class="d_form_text" >备注</td>
+	                <td class="d_form_info"><span id="bz" style="word-break: break-word;"></span> </td>	              
+	         	</tr>			        
+            </table>	
+		</div>
+		<div class="field">
+			<div class="title">遗属信息</div>
+			<table width="100%"class="d_form_table">  	
+	         	<tr>
+	            	<td class="d_form_text" width="40%">姓名：&nbsp;</td>
+	                <td class="d_form_info"> <span id="po_xm" ></span>  </td>	            	
+	         	</tr>
+	         	<tr>
+	         		<td class="d_form_text">性别&nbsp;&nbsp;</td>
+	                <td class="d_form_info">
+	                  <span  id="text_po_sex"></span>	
+	                </td>
+	         	</tr>
+	         	<tr>
+	         		<td class="d_form_text">出生日期&nbsp;&nbsp;</td>
+	                <td class="d_form_info">
+	                  <span  id="po_birthday"></span>	
+	                </td>
+	         	</tr>	
+	         	<tr>
+	            	<td class="d_form_text" >工作单位及职务</td>
+	                <td class="d_form_info"><span  id="po_post" style="word-break: break-word;"></span></td>	            	
+	         	</tr>
+	         	<tr>
+	         		<td class="d_form_text">目前状态</td>
+	                <td class="d_form_info"><span   id="text_po_present"  ></span></td>
+	         	</tr>
+	       	    <tr>
+	         	    <td class="d_form_text" >联系电话</td>
+	                <td class="d_form_info"><span id="po_phone" ></span> </td>	              
+	         	</tr>			        
+            </table>	
+		</div>
+		<div class="field">
+			<div class="title">子女信息</div>
+			<ul class="data-list" id="table_list" style="list-style-type:none;margin-top:10px;">
+			<li style="display: none;" >				
+				<!-- 点击行的参数 -->
+				<div class="list_row_con" style="min-height:65px;background-color: #ffffff;" >
+				   <div style="display: none;">{children_guid}</div>
+					<div class="list_row_col2">
+					   <div class="list_row_col2_1 overflow">
+					   		<div style="width:45%;display:inline-block;">姓名：{children_xm}</div>
+					   		<div style="width:45%;display:inline-block;text-align:right;">性别：{children_sex}</div>
+					  </div>	
+					  <div class="list_row_col2_2 overflow" style="top:10px;">					  				   		
+					   		<div style="width:45%;display:inline-block;">生日：{children_birthday}</div>
+					   		<div style="width:45%;display:inline-block;text-align:right;">联系电话：{children_phone}</div>
+					   </div>
+					  <div class="list_row_col2_2 overflow" style="top:10px;">					   		
+					   		<div style="width:45%;display:inline-block;">目前状况：{situation}</div>					   				   							   					   
+					   		<div style="width:45%;display:inline-block;text-align:right;">是否同住:{cohabit}</div>
+					   </div>		
+					</div>
+				</div>
+			</li>
+		</ul>
+		<div class="ui-refresh" id="div_table_list"></div>
+	 </div>        
+   </div>
+ </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1.0">
+    <title>详情</title>
+    <link rel="stylesheet" type="text/css" href="../../../gmu/css/gmu.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/base.css" />
+    <link type="text/css" rel="stylesheet" href="../../../css/iconfont/iconfont.css" />
+    <script type="text/javascript" src="../../../gmu/js/gmu.js"></script> 
+	<script type="text/javascript" src="../../../js/ict.js"></script>
+    <script type="text/javascript" src="../../../js/local.js"></script>
+    <script type="text/javascript">
+        sys_addMeun = false;
+		var yywid = getQueryStringRegExp("yywid");
+		var _list = {};
+		$(function(){
+			//生成toolbar
+		  	$('#toolbar2').toolbar();
+		  
+	        sys_ajaxGet("/tzsf/signup/count.do?method=wap_getNameListByPlace",{ywid:yywid},function(json){
+	             bind_html(json.list_place);
+	            var _height = getListHeight();
+	            $("#innerscroller").height(window.innerHeight-_height);
+				innerscroll = new iScroll("innerscroller",{click:true});
+	        });
+	     
+		});
+		function  bind_html(list){
+		  if (list.length > 0) {
+			var sspHtml = "";
+		
+			for (var i = 0; i < list.length; i++) {	
+				       
+		        sspHtml+="<div class='item'>";
+		        sspHtml+="<div class='item_place'><span>"+list[i].place_name+"</span><span>&nbsp;("+list[i].num+"</span>人)</div>";
+		        sspHtml+="<div class='item_names'>"+list[i].yhxms+"</div>";
+		        sspHtml+="</div>";
+			}
+			
+			$('#main').html("");
+			$('#main').html(sspHtml);
+		   }
+		}
+		
+		function go_back(){
+			 window.location.href="show.html?ywid="+yywid;
+   		}
+	
+    </script>
+
+    <style type="text/css">
+    
+		.ui-toolbar-wrap{
+    		//background-color: #FFB73E;
+    		border: none !important;
+    	}
+    	.item{
+    	  padding:10px;
+    	}
+    	.item_place{
+    	  border-bottom:1px solid #717171;
+    	}
+    	.item_names{
+    	   margin-top: 5px;
+    	}
+    	    
+    </style>
+  </head>
+  <body>
+    <div id="toolbar2">
+	    <span class="btn_bak"  onclick="go_back();"></span>
+	    <h1 class="toolbar_title">活动报名乘车地点</h1>
+	</div>
+	<div id="innerscroller"> 
+	     <div id="main">
+			
+		  </div>
+      </div> 
+	    					
+
+  </body>
+</html>

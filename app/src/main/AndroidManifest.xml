@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.unicom.jazg"
     android:versionCode="28"
-    android:versionName="2.8(94)" >
+    android:versionName="2.8(95)" >
 
 
     <uses-permission android:name="android.permission.GET_TASKS" />

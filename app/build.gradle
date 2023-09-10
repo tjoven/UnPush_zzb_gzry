@@ -36,6 +36,8 @@ android {
 }
 
 dependencies {
+    implementation files('libs\\okhttp-3.4.1.jar')
+    implementation files('libs\\okio-1.11.0.jar')
     compile 'com.android.support:support-v4:22.+'
     compile files('libs/android-async-http-1.4.4.jar')
     compile files('libs/android-viewbadger.jar')

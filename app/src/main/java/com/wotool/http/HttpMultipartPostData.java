@@ -1,6 +1,7 @@
 package com.wotool.http;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -18,11 +19,19 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.unicom.baseoa.WebViewWnd;
 import com.unicom.baseoa.update.HttpClientUtil;
-import com.wotool.http.CustomMultipartEntity.ProgressListener;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class HttpMultipartPostData extends AsyncTask<String, Integer, String> {
 
@@ -57,49 +66,51 @@ public class HttpMultipartPostData extends AsyncTask<String, Integer, String> {
 
 	@Override
 	protected String doInBackground(String... params) {
-		String serverResponse = null;
-
-		//旧的方式走http
-		//HttpClient httpClient = new DefaultHttpClient();
-		//新的方式走https
-		DefaultHttpClient httpClient = HttpClientUtil.getNewHttpClient(context);
-		HttpContext httpContext = new BasicHttpContext();
-		HttpPost httpPost = new HttpPost(url);
-
 		try {
-			CustomMultipartEntity multipartContent = new CustomMultipartEntity(
-					new ProgressListener() {
-						@Override
-						public void transferred(long num) {
-							publishProgress((int) ((num / (float) totalSize) * 100));
-						}
-					});
+			String type = paraMap.get("type");
+			ResponseBody responseBody = upload(url,file,type);
+			String path = responseBody.string();
 
-			// We use FileBody to transfer an image
-			
-	         if (paraMap != null && !paraMap.isEmpty()) {
-	             for (Map.Entry<String, String> entry : paraMap.entrySet()) {
-	            	 multipartContent.addPart(entry.getKey(), new StringBody(entry.getValue(),Charset.forName("UTF-8")));
-	             }
-	         }
-	         multipartContent.addPart("data", new FileBody(file));
-			totalSize = multipartContent.getContentLength();
-
-			// Send it
-			httpPost.setEntity(multipartContent);
-			HttpResponse response = httpClient.execute(httpPost);
-			uploadSuccess = true;//上传成功
-			serverResponse = EntityUtils.toString(response.getEntity());
-			JSONObject jsons = new JSONObject(serverResponse);
-			 zid = jsons.optString("zid");
-			 filepath = jsons.optString("filepath");
-			 guid=jsons.optString("guid");
-	         //file.delete();    
+			Log.e("upload@@@", "responseBody="+ path);
+			return path;
 		} catch (Exception e) {
 			e.printStackTrace();
+			Log.e("Exception： ", e.getMessage(),e);
 		}
 
-		return serverResponse;
+		return null;
+	}
+
+	public ResponseBody upload(String url, File file,String type) throws IOException {
+		OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+		builder.hostnameVerifier(new SSLUtil.AnyHostnameVerifier())
+				.sslSocketFactory(SSLUtil.getSSLSocketFactory(), new SSLUtil.AnyTrustManager());
+		OkHttpClient client = builder.build();
+		RequestBody requestBody = new MultipartBody.Builder()
+				.setType(MultipartBody.FORM)
+				.addFormDataPart(type, file.getName(),
+						RequestBody.create(MediaType.parse("multipart/form-data"), file))
+				.build();
+		ProgressRequestBody progressRequestBody = new ProgressRequestBody(requestBody, new ProgressListener() {
+			@Override
+			public void onProgress(long currentBytes, long totalBytes) {
+				publishProgress((int) ((currentBytes / (float) totalBytes) * 100));
+			}
+		});
+
+		Request request = new Request.Builder()
+				.url(url)
+				.post(progressRequestBody)
+				.build();
+		Response response = client.newCall(request).execute();
+		if (!response.isSuccessful()){
+			uploadSuccess = false;//上传失败
+			throw new IOException("Unexpected code " + response);
+		}else {
+			uploadSuccess = true;//上传成功
+		}
+		return response.body();
 	}
 
 	@Override

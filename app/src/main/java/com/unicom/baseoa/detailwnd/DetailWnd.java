@@ -456,8 +456,8 @@ private	WebChromeClient webChromeClient = new WebChromeClient(){
 			client.post(url, params, new AsyncHttpResponseHandler() {
 			    @Override
 			    public void onSuccess(String response) {
-			    	if(!"".equals(callback)){
-			    		System.out.println("3333333333333333");
+					System.out.println("3333333333333333 "+response);
+					if(!"".equals(callback)){
 			    		String str="";
 			    		if(response.indexOf("login.do?method=exit")>-1){
 			    			str="{\"error\":\""+response+"\"}";

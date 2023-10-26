@@ -27,6 +27,16 @@
 
 	function getJbxx() {
 		sys_ajaxGet("/ltz/wapPerson/default.do?method=showBasic&yh_id=" + qbxxid, function(json) {
+			var birthday = json.birthday;
+			if(birthday != undefined){
+				var birthdayArr = birthday.split("-");
+				if(birthdayArr.length >= 2){
+				  birthday = birthdayArr[0] +"-"+  birthdayArr[1];
+				}else if(birthdayArr.length >= 1){
+				   birthday = birthdayArr[0];
+				}
+				json.birthday = birthday;
+			}
 			bind(json);
 			var perPhoto=json.per_photo==null?'img/panel.png':json.per_photo;
 			$('#imgPerson').attr({

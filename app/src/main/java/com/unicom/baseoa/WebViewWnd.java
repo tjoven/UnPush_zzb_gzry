@@ -430,10 +430,10 @@ public class WebViewWnd extends Activity implements OnHttpDocDownListener,BDLoca
 		SharedPreferences settings = getSharedPreferences(getString(R.string.SETTING_INFOS), 0);
 		Utility.iURL = settings.getString("httpMain","");
 		//||!this.getString(R.string.url_new2).equals(Utility.iURL)
-		if(Utility.iURL.equals("")){
+//		if(Utility.iURL.equals("")){
 			Utility.iURL =   this.getString(R.string.url_new2);  
 			settings.edit().putString("httpMain", Utility.iURL).commit();
-		}
+//		}
 		
 		if (Utility.iURL==null||Utility.iURL.equals("")) {
 			Intent intent=new Intent();
